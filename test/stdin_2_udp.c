@@ -7,10 +7,9 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-#define LG_BUFFER 1024
+#include "header.h"
 
-int lecture_arguments (int argc, char * argv [],
-	struct sockaddr_in * adresse, char * protocole);
+#define LG_BUFFER 1024
 
 int main (int argc, char *argv[])
 {
