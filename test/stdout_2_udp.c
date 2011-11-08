@@ -7,32 +7,23 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
+#include "header.h"
+
 #define LG_BUFFER 1024
 
 int main (int argc, char *argv[])
 {
-	int sock;
 	struct sockaddr_in adresse;
 	char buffer[LG_BUFFER];
 	int nb_lus;
+	int sock = openSock(argc, argv, &adresse);
 	
-
-	if (lecture_arguments(argc, argv, & adresse, "udp") < 0)
-		exit(EXIT_FAILURE);
-	
-	adresse.sin_family = AF_INET;
-	
-	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		perror("socket");
-		exit(EXIT_FAILURE);
-	}
-	
-	if (bind(sock, &adresse, sizeof(struct sockaddr_in)) < 0) {
+	if (bind(sock, (struct sockaddr *) &adresse, sizeof(struct sockaddr_in)) < 0) {
 		perror("bind");
 		exit(EXIT_FAILURE);
 	}
 	
-	setvbuf(stdout, NULL, _IONBF, 0);
+	//setvbuf(stdout, NULL, _IONBF, 0);
 	
 	while (1) 
 	{

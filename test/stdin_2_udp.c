@@ -13,19 +13,13 @@
 
 int main (int argc, char *argv[])
 {
-	int sock;
+	int nb_lus;
 	struct sockaddr_in adresse;
 	char buffer[LG_BUFFER];
-	int nb_lus;
-
-	if (lecture_arguments(argc, argv, & adresse, "udp") < 0)
-		exit(EXIT_FAILURE);
+	int sock = openSock(argc, argv, & adresse);
 	
-	adresse.sin_family = AF_INET;
-	
-	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) 
-	{
-		perror("socket");
+	if (bind(sock, (struct sockaddr *) &adresse, sizeof(struct sockaddr_in)) < 0) {
+		perror("bind");
 		exit(EXIT_FAILURE);
 	}
 	

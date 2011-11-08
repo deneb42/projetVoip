@@ -4,5 +4,6 @@
 #define HEADER_H
 
 	int lecture_arguments (int argc, char * argv [], struct sockaddr_in * adresse, char * protocole);
+	int openSock(int argc, char *argv[], struct sockaddr_in * adresse);
 
 #endif
