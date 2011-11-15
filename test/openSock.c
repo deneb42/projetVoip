@@ -9,18 +9,13 @@
 
 #include "header.h"
 
-int openSock(int argc, char *argv[], struct sockaddr_in * adresse)
+int sock_udp()
 {
 	int sock;
 
-	if (lecture_arguments(argc, argv, adresse, "udp") < 0)
-		exit(EXIT_FAILURE);
-	
-	adresse->sin_family = AF_INET;
-	
 	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) 
 	{
-		perror("socket");
+		fprintf(stderr, "sock_udp : address and port must not be NULL");
 		exit(EXIT_FAILURE);
 	}
 	

@@ -3,10 +3,12 @@
 #include <string.h>
 #include <unistd.h>
 
-int lecture_arguments (int argc, char * argv [], char* address, char* port)
+int lecture_arguments (int argc, char * argv [], char** address, char** port)
 {
 	char * liste_options = "a:p:h";
 	int option;
+	char* ad = "localhost";
+	char* po = "2000";
 	
 	if(address == NULL || port==NULL)
 	{
@@ -14,18 +16,18 @@ int lecture_arguments (int argc, char * argv [], char* address, char* port)
 		return EXIT_FAILURE;
 	}
 	
-	strcpy(address, "localhost");;
-	strcpy(port, "2000");
+	*address = ad;
+	*port = po;
 
 	while ((option = getopt(argc, argv, liste_options)) != -1) 
 	{
 		switch (option) 
 		{
 			case 'a' :
-				strcpy(address, optarg);
+				*address = optarg;
 				break;
 			case 'p' :
-				strcpy(port, optarg);
+				*port = optarg;
 				break;
 			case 'h' :
 				fprintf(stderr, "Syntaxe : %s [-a adresse] [-p port] \n", argv[0]);
