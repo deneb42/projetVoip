@@ -7,28 +7,22 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-#define LG_BUFFER 1024
+#include "header.h"
 
-int lecture_arguments (int argc, char * argv [],
-	struct sockaddr_in * adresse, char * protocole);
+#define LG_BUFFER 1024
 
 int main (int argc, char *argv[])
 {
-	int sock;
 	struct sockaddr_in adresse;
-	char buffer[LG_BUFFER];
+	char buffer[LG_BUFFER], buffer2[LG_BUFFER];
 	int nb_lus;
-
-	if (lecture_arguments(argc, argv, & adresse, "udp") < 0)
+	int sock = openSock(argc, argv, & adresse);
+	//int sock2 = openSock(argc, argv, &adresse);
+	/*
+	if (bind(sock, (struct sockaddr *) &adresse, sizeof(struct sockaddr_in)) < 0) {
+		perror("bind");
 		exit(EXIT_FAILURE);
-	
-	adresse.sin_family = AF_INET;
-	
-	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) 
-	{
-		perror("socket");
-		exit(EXIT_FAILURE);
-	}
+	}*/
 	
 	while (1) 
 	{
@@ -42,6 +36,12 @@ int main (int argc, char *argv[])
 		}
 		sendto(sock, buffer, nb_lus, 0,
 			(struct sockaddr *) & adresse, sizeof (struct sockaddr_in));
+			
+		//if ((nb_lus = recv(sock, buffer2, LG_BUFFER, 0)) == 0)
+		//	break;
+		
+		//write(STDOUT_FILENO, buffer2, nb_lus);
+		// ne marche pas encore
 	}
 	
 	return EXIT_SUCCESS;

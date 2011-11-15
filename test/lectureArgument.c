@@ -8,8 +8,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-int lecture_arguments (int argc, char * argv [],
-	struct sockaddr_in * adresse, char * protocole)
+int lecture_arguments (int argc, char * argv [], struct sockaddr_in * adresse, char * protocole)
 {
 	char * liste_options = "a:p:h";
 	int option;
@@ -28,8 +27,7 @@ int lecture_arguments (int argc, char * argv [],
 				port = optarg;
 				break;
 			case 'h' :
-				fprintf(stderr, "Syntaxe : %s [-a adresse] [-p port] \n",
-				argv[0]);
+				fprintf(stderr, "Syntaxe : %s [-a adresse] [-p port] \n", argv[0]);
 				return -1;
 			default :
 				break;
