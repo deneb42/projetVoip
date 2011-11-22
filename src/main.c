@@ -12,60 +12,39 @@
 
 #define LG_BUFFER 1024
 
+void traitement_client(int sock, struct sockaddr_in * serveur);//, char* buf, int lol);
+void traitement_serveur(int sock);
+
 int main (int argc, char *argv[])
 {
-	struct sockaddr_in recepteur, emeteur;
-	char buffer[LG_BUFFER], buffer2[LG_BUFFER];
-	int nb_lus;
-	int sockSize = sizeof(struct sockaddr_in);
-	int sock = sock_udp();
+	struct sockaddr_in serveur;
+	int sock;
 	char *address, *port;
-
+	// Fin des variables
 	
+	// Initialisation --------------------------------------------------
 	if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
 	
-	set_udp_address(&recepteur, port, address);
+	sock = sock_udp();
+	set_udp_address(&serveur, port, address);
 	
 	#ifdef SERVEUR
-	if (bind(sock, (struct sockaddr *) &recepteur, sizeof(struct sockaddr_in)) < 0) 
-	{
-		perror("bind");
-		exit(EXIT_FAILURE);
-	}
+		if (bind(sock, (struct sockaddr *) &serveur, sizeof(struct sockaddr_in)) < 0) 
+		{
+			perror("bind");
+			exit(EXIT_FAILURE);
+		}
 	#endif
+	//------------------------------------------------------------------
 	
-	while (1)
+	while (1) // boucle principale
 	{
 		#ifdef SERVEUR
-			if ((nb_lus = recvfrom(sock, buffer, LG_BUFFER, 0, (struct sockaddr *) &emeteur, (socklen_t*)&sockSize)) == 0)
-				break;
-					
-			if (nb_lus < 0) {
-				perror("read");
-				break;
-			}
-			
-			write(STDOUT_FILENO, buffer, nb_lus);
-			
-			sendto(sock, buffer, nb_lus, 0, (struct sockaddr *) &emeteur, sockSize);
+			traitement_serveur(sock);
 		#endif
 		#ifdef CLIENT
-			if ((nb_lus = read(STDIN_FILENO, buffer, LG_BUFFER)) == 0)
-				break;
-
-			if (nb_lus < 0) 
-			{
-				perror("read");
-				break;
-			}
-			sendto(sock, buffer, nb_lus, 0,
-				(struct sockaddr *) & recepteur, sizeof (struct sockaddr_in));
-				
-			if ((nb_lus = recv(sock, buffer2, LG_BUFFER, 0)) == 0)
-				break;
-			
-			write(STDOUT_FILENO, buffer2, nb_lus);
+			traitement_client(sock, &serveur);
 		#endif
 	}
 	
