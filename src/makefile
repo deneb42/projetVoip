@@ -7,7 +7,7 @@
 
 INC_PATH =
 LIB_PATH = 
-LIBRARY = -asound
+LIBRARY = -lasound
 CFLAGS = -Wall -pedantic -std=c99 -D_GNU_SOURCE
 LDFALGS = $(LIB_PATH) $(LIBRARY)
 GCC=gcc
@@ -28,10 +28,10 @@ SERVEUR = serveur
 all : client serveur
 
 client : $(OBJS:.o=_client.o ) 
-	$(GCC) -o $(PGM_PATH)client $(OBJS:.o=_client.o )  $(LDFALGS) 
+	$(GCC) -o $(PGM_PATH)$(CLIENT) $(OBJS:.o=_client.o )  $(LDFALGS) 
 	
 serveur : $(OBJS:.o=_serveur.o )
-	$(GCC) -o $(PGM_PATH)serveur $(OBJS:.o=_serveur.o )  $(LDFALGS)
+	$(GCC) -o $(PGM_PATH)$(SERVEUR) $(OBJS:.o=_serveur.o ) $(LDFALGS)
 
 # generic method for all the .o
 
