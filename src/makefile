@@ -1,7 +1,7 @@
 #|  voip makefile                   |
 #|                                  |
 #|  by :deneb                       |
-#|  last modif : 11/10/11           |
+#|  last modif : 22/11/11           |
 #/__________________________________/
 
 
@@ -13,7 +13,7 @@ LDFALGS = $(LIB_PATH) $(LIBRARY)
 GCC=gcc
 
 # Name of the files (more .o)
-OBJS = 
+OBJS = socket_utils.o 
 # Path where the bin will be
 PGM_PATH = ./
 # Name of the bin

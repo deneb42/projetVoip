@@ -9,7 +9,8 @@
 #include <sys/socket.h>
 
 int set_udp_address(struct sockaddr_in * address, char* port, char* host)
-{
+{ /* Sur-function that initiate an address for a udp connection */
+
 	return set_address(address, AF_INET, port, host, "udp");
 }
 
@@ -48,7 +49,8 @@ int set_address(struct sockaddr_in * address, unsigned short int type, char* por
 }
 
 int sock_udp()
-{
+{ /* Create a UDP socket and returns its descriptor */
+
 	int sock;
 
 	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) 

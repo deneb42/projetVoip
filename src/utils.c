@@ -4,7 +4,8 @@
 #include <unistd.h>
 
 int lecture_arguments (int argc, char * argv [], char** address, char** port)
-{
+{ /* reads the arguments and put them in the appropriate strings. if not given, initialize to default values */
+
 	char * liste_options = "a:p:h";
 	int option;
 	char* ad = "localhost";
