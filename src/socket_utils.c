@@ -8,17 +8,13 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-int set_udp_address(struct sockaddr_in * address, char* port, char* host)
-{ /* Sur-function that initiate an address for a udp connection */
-
-	return set_address(address, AF_INET, port, host, "udp");
-}
 
 int set_address(struct sockaddr_in * address, unsigned short int type, char* port, char* host, char* protocol)
 { /* Sets the parameters of the adress. protocol can be NULL. returns 1 on sucess, -1 on failure */
 
 	int num;
 	struct hostent * hostent;
+	struct servent * servent;
 	
 	memset(address, 0, sizeof (struct sockaddr_in));
 	
@@ -46,6 +42,12 @@ int set_address(struct sockaddr_in * address, unsigned short int type, char* por
 	
 	address->sin_port = servent->s_port; // si le protocole permet d'extrapoler le numero de port
 	return 1;
+}
+
+int set_udp_address(struct sockaddr_in * address, char* port, char* host)
+{ /* Sur-function that initiate an address for a udp connection */
+
+	return set_address(address, AF_INET, port, host, "udp");
 }
 
 int sock_udp()
