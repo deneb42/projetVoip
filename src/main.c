@@ -29,9 +29,9 @@ int main (int argc, char *argv[])
 	int sock;
 	char *address, *port;
 	//-------------------new ------------
-	snd_pcm_hw_params_t *params;
-	snd_pcm_t *handle;
-	char *buffer;
+	snd_pcm_hw_params_t *params[2];
+	snd_pcm_t *handle[2];
+	char *buffer[2];
 	
 	unsigned int val = 11025;
 	snd_pcm_uframes_t frames = 32;
@@ -59,12 +59,11 @@ int main (int argc, char *argv[])
 	#endif
 	//------------------------------------------------------------------
 	// SON==============================================================
-	#ifdef CLIENT
-		rc = snd_pcm_open(&handle, "default", SND_PCM_STREAM_CAPTURE, 0); /* Open PCM device for playback. */
-	#endif
-	#ifdef SERVEUR
-		rc = snd_pcm_open(&handle, "default", SND_PCM_STREAM_PLAYBACK, 0); /* Open PCM device for recording (capture). */
-	#endif
+	//#ifdef CLIENT
+		rc = snd_pcm_open(&handle[0], "default", SND_PCM_STREAM_CAPTURE, 0); /* Open PCM device for playback. */
+	//#endif
+	//#ifdef SERVEUR
+	//#endif
 	
 	if (rc < 0) 
 	{
@@ -72,66 +71,55 @@ int main (int argc, char *argv[])
 		exit(1);
 	}
 	
-	snd_pcm_hw_params_alloca(&params); /* Allocate a hardware parameters object. */
-
-	snd_pcm_hw_params_any(handle, params); /* Fill it in with default values. */
-
-	/* Set the desired hardware parameters. */
-	snd_pcm_hw_params_set_access(handle, params, SND_PCM_ACCESS_RW_INTERLEAVED); /* Interleaved mode */
-
-	snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16_LE); /* Signed 16-bit little-endian format */
+	rc = snd_pcm_open(&handle[1], "default", SND_PCM_STREAM_PLAYBACK, 0); /* Open PCM device for playback. */
 	
-	snd_pcm_hw_params_set_channels(handle, params, 2); /* Two channels (stereo) */
-	
-	snd_pcm_hw_params_set_rate_near(handle, params, &val, &dir); /* 44100 bits/second sampling rate (CD quality) */
-	
-	snd_pcm_hw_params_set_period_size_near(handle, params, &frames, &dir); /* Set period size to 32 frames. */
-	
-	rc = snd_pcm_hw_params(handle, params); /* Write the parameters to the driver */
 	if (rc < 0) 
 	{
-		fprintf(stderr, "unable to set hw parameters: %s\n", snd_strerror(rc));
+		fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
 		exit(1);
 	}
-  
-	snd_pcm_hw_params_get_period_size(params, &frames, &dir); /* Use a buffer large enough to hold one period */
+	
+	for(int i=0;i<2;i++)
+	{
+		snd_pcm_hw_params_alloca(&params[i]); /* Allocate a hardware parameters object. */
 
-	buffer = (char *) malloc(size);
+		snd_pcm_hw_params_any(handle[i], params[i]); /* Fill it in with default values. */
 
-	snd_pcm_hw_params_get_period_time(params, &val, &dir); /* We want to loop for 5 seconds */
+		/* Set the desired hardware parameters. */
+		snd_pcm_hw_params_set_access(handle[i], params[i], SND_PCM_ACCESS_RW_INTERLEAVED); /* Interleaved mode */
+
+		snd_pcm_hw_params_set_format(handle[i], params[i], SND_PCM_FORMAT_S16_LE); /* Signed 16-bit little-endian format */
+		
+		snd_pcm_hw_params_set_channels(handle[i], params[i], 2); /* Two channels (stereo) */
+		
+		snd_pcm_hw_params_set_rate_near(handle[i], params[i], &val, &dir); /* 44100 bits/second sampling rate (CD quality) */
+		
+		snd_pcm_hw_params_set_period_size_near(handle[i], params[i], &frames, &dir); /* Set period size to 32 frames. */
+		
+		rc = snd_pcm_hw_params(handle[i], params[i]); /* Write the parameters to the driver */
+		if (rc < 0) 
+		{
+			fprintf(stderr, "unable to set hw parameters: %s\n", snd_strerror(rc));
+			exit(1);
+		}
+	  
+		snd_pcm_hw_params_get_period_size(params[i], &frames, &dir); /* Use a buffer large enough to hold one period */
+
+		buffer[i] = (char *) malloc(size);
+
+		snd_pcm_hw_params_get_period_time(params[i], &val, &dir); /* We want to loop for 5 seconds */
+	}
 	
 	//==================================================================
 	
 	while (1) // boucle principale
 	{
-		#ifdef SERVEUR
-			//rc = read(0, buffer, size);
-			traitement_serveur(sock, buffer, size);
-			/*if (rc == 0) 
-			{
-				fprintf(stderr, "end of file on input\n");
-				break;
-			} 
-			else if (rc != size) 
-				fprintf(stderr, "short read: read %d bytes\n", rc);
-			*/
-			rc = snd_pcm_writei(handle, buffer, frames);
-			if (rc == -EPIPE) /* EPIPE means underrun */
-			{
-				fprintf(stderr, "underrun occurred\n");
-				snd_pcm_prepare(handle);
-			} 
-			else if (rc < 0) 
-				fprintf(stderr, "error from writei: %s\n", snd_strerror(rc));
-			else if (rc != (int)frames) 
-				fprintf(stderr, "short write, write %d frames\n", rc);
-		#endif
-		#ifdef CLIENT
-			rc = snd_pcm_readi(handle, buffer, frames);
+		
+			rc = snd_pcm_readi(handle[0], buffer[0], frames);
 			if (rc == -EPIPE) /* EPIPE means overrun */
 			{
 				fprintf(stderr, "overrun occurred\n");
-				snd_pcm_prepare(handle);
+				snd_pcm_prepare(handle[0]);
 			}
 			else if (rc < 0)
 				fprintf(stderr, "error from read: %s\n", snd_strerror(rc));
@@ -142,8 +130,31 @@ int main (int argc, char *argv[])
 			if (rc != size)
 				fprintf(stderr, "short write: wrote %d bytes\n", rc);
 			*/
+		#ifdef CLIENT
 			traitement_client(sock, &serveur, buffer, size);
         #endif
+        #ifdef SERVEUR
+			//rc = read(0, buffer, size);
+			traitement_serveur(sock, buffer, size);
+		#endif
+			/*if (rc == 0) 
+			{
+				fprintf(stderr, "end of file on input\n");
+				break;
+			} 
+			else if (rc != size) 
+				fprintf(stderr, "short read: read %d bytes\n", rc);
+			*/
+			rc = snd_pcm_writei(handle[1], buffer[1], frames);
+			if (rc == -EPIPE) /* EPIPE means underrun */
+			{
+				fprintf(stderr, "underrun occurred\n");
+				snd_pcm_prepare(handle[1]);
+			} 
+			else if (rc < 0) 
+				fprintf(stderr, "error from writei: %s\n", snd_strerror(rc));
+			else if (rc != (int)frames) 
+				fprintf(stderr, "short write, write %d frames\n", rc);
 /*
 		#ifdef SERVEUR
 			traitement_serveur(sock);
@@ -154,9 +165,12 @@ int main (int argc, char *argv[])
 */
 	}
 	
-	snd_pcm_drain(handle);
-	snd_pcm_close(handle);
-	free(buffer);
+	for(int i=0;i<2;i++)
+	{
+		snd_pcm_drain(handle[i]);
+		snd_pcm_close(handle[i]);
+		free(buffer[i]);
+	}
 	
 	return EXIT_SUCCESS;
 }
