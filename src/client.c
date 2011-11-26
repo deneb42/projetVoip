@@ -29,7 +29,7 @@ void traitement_client(int sock, struct sockaddr_in * serveur, void** element, i
 	
 	sendto(sock, element[0], size, 0, (struct sockaddr *) serveur, sizeof (struct sockaddr_in));
 		
-	if ((nb_lus = recv(sock, element[1], size, MSG_DONTWAIT)) == 0)
+	if ((nb_lus = recv(sock, element[0], size, MSG_DONTWAIT)) == 0)
 		return;
 	
 	//write(STDOUT_FILENO, buffer, nb_lus);
