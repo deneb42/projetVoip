@@ -17,7 +17,7 @@ void traitement_serveur(int sock, void** element, int size)
 	int sockSize = sizeof(struct sockaddr_in);
 	struct sockaddr_in client;
 	
-	if ((nb_lus = recvfrom(sock, element[1], size, 0, (struct sockaddr *) &client, (socklen_t*)&sockSize)) == 0)
+	if ((nb_lus = recvfrom(sock, element[0], size, 0, (struct sockaddr *) &client, (socklen_t*)&sockSize)) == 0)
 		return;
 		
 	if (nb_lus < 0) {

@@ -59,27 +59,29 @@ int main (int argc, char *argv[])
 	#endif
 	//------------------------------------------------------------------
 	// SON==============================================================
-	//#ifdef CLIENT
+	#ifdef CLIENT
 		rc = snd_pcm_open(&handle[0], "default", SND_PCM_STREAM_CAPTURE, 0); /* Open PCM device for playback. */
-	//#endif
-	//#ifdef SERVEUR
-	//#endif
+		
+		if (rc < 0) 
+		{
+			fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
+			exit(1);
+		}
+	#endif
+	#ifdef SERVEUR
+		
+		rc = snd_pcm_open(&handle[0], "default", SND_PCM_STREAM_PLAYBACK, 0); /* Open PCM device for playback. */
+		
+		if (rc < 0) 
+		{
+			fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
+			exit(1);
+		}
+	#endif
 	
-	if (rc < 0) 
-	{
-		fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
-		exit(1);
-	}
 	
-	rc = snd_pcm_open(&handle[1], "default", SND_PCM_STREAM_PLAYBACK, 0); /* Open PCM device for playback. */
 	
-	if (rc < 0) 
-	{
-		fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
-		exit(1);
-	}
-	
-	for(int i=0;i<2;i++)
+	for(int i=0;i<1;i++)
 	{
 		snd_pcm_hw_params_alloca(&params[i]); /* Allocate a hardware parameters object. */
 
@@ -145,16 +147,17 @@ int main (int argc, char *argv[])
 			else if (rc != size) 
 				fprintf(stderr, "short read: read %d bytes\n", rc);
 			*/
-			rc = snd_pcm_writei(handle[1], buffer[1], frames);
+			rc = snd_pcm_writei(handle[0], buffer[0], frames);
 			if (rc == -EPIPE) /* EPIPE means underrun */
 			{
 				fprintf(stderr, "underrun occurred\n");
-				snd_pcm_prepare(handle[1]);
+				snd_pcm_prepare(handle[0]);
 			} 
 			else if (rc < 0) 
 				fprintf(stderr, "error from writei: %s\n", snd_strerror(rc));
 			else if (rc != (int)frames) 
 				fprintf(stderr, "short write, write %d frames\n", rc);
+		
 /*
 		#ifdef SERVEUR
 			traitement_serveur(sock);
@@ -165,7 +168,7 @@ int main (int argc, char *argv[])
 */
 	}
 	
-	for(int i=0;i<2;i++)
+	for(int i=0;i<1;i++)
 	{
 		snd_pcm_drain(handle[i]);
 		snd_pcm_close(handle[i]);
