@@ -10,6 +10,9 @@
 #include "utils.h"
 #include "socket_utils.h"
 
+// NE PAS UTILISER LOCALHOST COMME ADRESSE DU SERVEUR ! IL FAUT UTILISER L'ADRESSE DE SOUS RÉSEAU
+
+
 //------------- new----------
 #define ALSA_PCM_NEW_HW_PARAMS_API
 
