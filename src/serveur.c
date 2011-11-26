@@ -25,7 +25,7 @@ void traitement_serveur(int sock, void** element, int size)
 		return;
 	}
 	
-	write(STDOUT_FILENO, "recu\n", 6);
+	//write(STDOUT_FILENO, "recu\n", 6);
 
 	sendto(sock, element[0], size, 0, (struct sockaddr *) &client, sockSize);
 }
