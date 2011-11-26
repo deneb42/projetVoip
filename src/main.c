@@ -17,8 +17,8 @@
 
 //---------------------------
 
-void traitement_client(int sock, struct sockaddr_in * serveur, void* element, int size);
-void traitement_serveur(int sock, void* element, int size); // suffisant ou besoin de pointeur sur pointeur ?
+void traitement_client(int sock, struct sockaddr_in * serveur, void* element, int *size);
+void traitement_serveur(int sock, void* element, int *size);
 
 int main (int argc, char *argv[])
 {
@@ -30,11 +30,11 @@ int main (int argc, char *argv[])
 	snd_pcm_t *handle[2];
 	char *buffer[2];
 	
-	unsigned int val = 11025;
-	snd_pcm_uframes_t frames = 32;
-	int size = frames * 4; /* 2 bytes/sample, 2 channels */
+	unsigned int val[2] = {11025, 11025};
+	snd_pcm_uframes_t frames[2] = {32, 32};
+	int size[2] = {128, 128}; /* 2 bytes/sample, 2 channels */
 		
-	int dir;
+	int dir[2];
 	int rc;
 	//-------------------------------------
 	
@@ -56,7 +56,7 @@ int main (int argc, char *argv[])
 	#endif
 	//------------------------------------------------------------------
 	// SON==============================================================
-	#ifdef CLIENT
+	//#ifdef CLIENT
 		rc = snd_pcm_open(&handle[0], "default", SND_PCM_STREAM_CAPTURE, 0); /* Open PCM device for playback. */
 		
 		if (rc < 0) 
@@ -64,21 +64,21 @@ int main (int argc, char *argv[])
 			fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
 			exit(1);
 		}
-	#endif
-	#ifdef SERVEUR
+	
+	//*#ifdef SERVEUR
 		
-		rc = snd_pcm_open(&handle[0], "default", SND_PCM_STREAM_PLAYBACK, 0); /* Open PCM device for playback. */
+		rc = snd_pcm_open(&handle[1], "default", SND_PCM_STREAM_PLAYBACK, 0);
 		
 		if (rc < 0) 
 		{
 			fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
 			exit(1);
 		}
-	#endif
+	//#endif */
 	
 	
 	
-	for(int i=0;i<1;i++)
+	for(int i=0;i<2;i++)
 	{
 		snd_pcm_hw_params_alloca(&params[i]); /* Allocate a hardware parameters object. */
 
@@ -91,9 +91,9 @@ int main (int argc, char *argv[])
 		
 		snd_pcm_hw_params_set_channels(handle[i], params[i], 2); /* Two channels (stereo) */
 		
-		snd_pcm_hw_params_set_rate_near(handle[i], params[i], &val, &dir); /* 44100 bits/second sampling rate (CD quality) */
+		snd_pcm_hw_params_set_rate_near(handle[i], params[i], i+val, dir+i); /* 44100 bits/second sampling rate (CD quality) */
 		
-		snd_pcm_hw_params_set_period_size_near(handle[i], params[i], &frames, &dir); /* Set period size to 32 frames. */
+		snd_pcm_hw_params_set_period_size_near(handle[i], params[i], i+frames, i+dir); /* Set period size to 32 frames. */
 		
 		rc = snd_pcm_hw_params(handle[i], params[i]); /* Write the parameters to the driver */
 		if (rc < 0) 
@@ -102,70 +102,47 @@ int main (int argc, char *argv[])
 			exit(1);
 		}
 	  
-		snd_pcm_hw_params_get_period_size(params[i], &frames, &dir); /* Use a buffer large enough to hold one period */
+		snd_pcm_hw_params_get_period_size(params[i], i+frames, i+dir); /* Use a buffer large enough to hold one period */
 
-		buffer[i] = (char *) malloc(size);
+		buffer[i] = (char *) malloc(size[i]);
 
-		snd_pcm_hw_params_get_period_time(params[i], &val, &dir); /* We want to loop for 5 seconds */
+		snd_pcm_hw_params_get_period_time(params[i], i+val, i+dir); /* We want to loop for 5 seconds */
 	}
-	
 	//==================================================================
 	
 	while (1) // boucle principale
 	{
+		rc = snd_pcm_readi(handle[0], buffer[0], frames[0]);
+		if (rc == -EPIPE) /* EPIPE means overrun */
+		{
+			fprintf(stderr, "overrun occurred\n");
+			snd_pcm_prepare(handle[0]);
+		}
+		else if (rc < 0)
+			fprintf(stderr, "error from read: %s\n", snd_strerror(rc));
+		else if (rc != (int)frames[1])
+			fprintf(stderr, "short read, read %d frames\n", rc);
 		
-			rc = snd_pcm_readi(handle[0], buffer[0], frames);
-			if (rc == -EPIPE) /* EPIPE means overrun */
-			{
-				fprintf(stderr, "overrun occurred\n");
-				snd_pcm_prepare(handle[0]);
-			}
-			else if (rc < 0)
-				fprintf(stderr, "error from read: %s\n", snd_strerror(rc));
-			else if (rc != (int)frames)
-				fprintf(stderr, "short read, read %d frames\n", rc);
-
-			/*rc = write(1, buffer, size);
-			if (rc != size)
-				fprintf(stderr, "short write: wrote %d bytes\n", rc);
-			*/
+		#ifdef SERVEUR
+			traitement_serveur(sock, buffer, size);
+		#endif
 		#ifdef CLIENT
 			traitement_client(sock, &serveur, buffer, size);
         #endif
-        #ifdef SERVEUR
-			//rc = read(0, buffer, size);
-			traitement_serveur(sock, buffer, size);
-		#endif
-			/*if (rc == 0) 
-			{
-				fprintf(stderr, "end of file on input\n");
-				break;
-			} 
-			else if (rc != size) 
-				fprintf(stderr, "short read: read %d bytes\n", rc);
-			*/
-			rc = snd_pcm_writei(handle[0], buffer[0], frames);
-			if (rc == -EPIPE) /* EPIPE means underrun */
-			{
-				fprintf(stderr, "underrun occurred\n");
-				snd_pcm_prepare(handle[0]);
-			} 
-			else if (rc < 0) 
-				fprintf(stderr, "error from writei: %s\n", snd_strerror(rc));
-			else if (rc != (int)frames) 
-				fprintf(stderr, "short write, write %d frames\n", rc);
-		
-/*
-		#ifdef SERVEUR
-			traitement_serveur(sock);
-		#endif
-		#ifdef CLIENT
-			traitement_client(sock, &serveur);
-		#endif
-*/
+        
+		rc = snd_pcm_writei(handle[1], buffer[1], frames[1]);
+		if (rc == -EPIPE) /* EPIPE means underrun */
+		{
+			fprintf(stderr, "underrun occurred\n");
+			snd_pcm_prepare(handle[1]);
+		} 
+		else if (rc < 0) 
+			fprintf(stderr, "error from writei: %s\n", snd_strerror(rc));
+		else if (rc != (int)frames[1]) 
+			fprintf(stderr, "short write, write %d frames\n", rc);
 	}
 	
-	for(int i=0;i<1;i++)
+	for(int i=0;i<2;i++)
 	{
 		snd_pcm_drain(handle[i]);
 		snd_pcm_close(handle[i]);
