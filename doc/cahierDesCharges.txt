@@ -1,0 +1,96 @@
+﻿Cahier des charges : 
+
+Permet l'envoi et la récéption de voie entre deux machines.
+
+- L'enregistrement de la voix
+	Enregistrement et lecture de la voix grace a ALSA
+		utilisation du format PCM pour le stockage des données
+	Paramètres réglables a la volée (permettant d'améliorer le service si un QoS est mis en place)
+	
+- Lecture de la voix
+	Utilisation de ALSA et de son module PCM
+	Synchronisation des paquets avant lecture
+		utilisation d'une liste chainée circulaire a acces desynchronisé
+	Perte de packet possible et alors on l'ignore et lis le suivant.
+	
+- Envoi / reception
+	Utilisation du protocole RTP
+	(si possible) Utilisation d'un protocole de QoS et d'un protocole de sessions.
+	Etablissement d'un socket entre les deux participants durant la communication.
+
+- Structure 
+	Dans un premier temps : client - serveur, le serveur lisant et enregistrant aussi la voix.
+	Dans un second temps : multi clients - serveur : le serveur sers de relais entre les différents clients. plus de lecture sur le serveur.
+
+- Interface graphique :
+	1 er temps (client serveur)
+		champ texte pour l'IP du serveur
+		affichage des demande de connections
+		permet d'accepter ou de refuser la connection
+		bouton pour couper la connection
+	2eme temps (uniquement client)
+		liste des connectés
+		menu pour se connecter a un des connectés
+		affichage des demandes de connections
+		accepter ou refuser une connection
+		fin de connection
+	
+Premier temps : 
+ - le client demande a se connecter au serveur.
+ - La connection est établie par le serveur
+ - Enregistrement et envoi de la voix des deux cotés
+ - Resynchronisation et lecture de la voix de chaque coté.
+ - Demande de fin de connection de la part d'un des participants
+ - Fin de connection
+ 
+Deuxieme temps :
+ - Un client se connecte au serveur
+ - le serveur accepte la connection et lui retourne la liste des connectés.
+ - Un client (1) demande a se connecter a un autre (2).
+ - le serveur transmet la demande
+ - le client 2 accepte la connection
+ - la connection est établie entre les clients (directement (dur) ou par le biais du serveur)
+ - l'un des clients demande la fin de la connection
+ - la demande est transmise, et le serveur arrete la retransmission
+ - le client demande a se déconnecter (ou timeout)
+ - le serveur coupe la connection 
+ - le serveur envoit aux autres clients la nouvelle liste des connectés
+
+Regroupement des fonctions afin de ne pas dupliquer de code entre client et serveur (le moins possible de duplic)
+
+Etapes :
+
+	Origine : 
+		- Enregistrement / lecture du son (meme machine)
+		- Mise en place d'un protocole RTP entre deux machines (etablissement d'un socket, mono sens)
+
+	Base :
+		-Transfert de la voix par rtp, lecture possible a l'arrivée
+			- 1er temps : arrivée désync, lecture a l'arrivée
+			- 2e temps : sync des paquets a l'arrivée (liste chainée circulaire / coutdown), lecture des paquets bien rangés.
+
+	Après
+		- Etablissement propre de la connexion
+		- Mise en place du double sens
+		- Réglage des paramètres a la volée
+		- Interface graphique
+		- QoS
+		
+	Mise en place d'un serveur : 
+		- connection au serveur
+		- Visibilité des personnes connectées
+		- connection avec une personne (serveur fait office de relais) (propre)
+		- options sociales ( bloquer, etc...)
+	
+	Fonctionnalités additionnelles (si le temlps le permet)
+		- chat texte (type IM)
+		- interface graphique évolutive (modification facile de l'affichage et interface plus jolie (type QT)
+		- cryptage des connections (utilisation d'une clé Asymétrique pour l'envoi d'une clé symétrique, 
+																puis utilisation de la clé symétrique lors de la communication => gain de temps de traitement conséquent)
+		- Compression (MPEG Layer 3 ou Speex (format de compression libre avec perte spécialisé dans la voix)).
+		- Etude de la QoS et affichage (meme proposition de changer les paramètres afin d'amméliorer la QoS)
+		- Création d'un portage OpenAL pour plateformes Windows (et MAC ?)
+
+Question : 
+	protocole pour l'établissement de la connection ? SIP ? (mais couche 7 du modèle OSI)
+	Construction de packets pour éviter de devoir passer les comm par le serveur ? winpcap ? (en java c'est jpcap, il doit y avoir un équivalent en C)
