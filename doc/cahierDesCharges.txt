@@ -1,6 +1,13 @@
 ﻿Cahier des charges : 
 
-Permet l'envoi et la récéption de voie entre deux machines.
+PROBLEME AVEC GTK REGLÉ PAR : 
+
+gcc -Wall -c main.c $(pkg-config --cflags gtk+-2.0)
+gcc "-W|, --no-as-needed" -Wall -o testGTK main.o $(pkg-config --libs gtk+-2.0)
+
+
+
+Permet l'envoi et la récéption de voix entre deux machines.
 
 - L'enregistrement de la voix
 	Enregistrement et lecture de la voix grace a ALSA
