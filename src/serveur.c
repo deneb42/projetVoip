@@ -11,21 +11,23 @@
 #include <sys/socket.h>
 
 
-void traitement_serveur(int sock, void** element, int* size)
+int traitement_serveur(int sock, void** element, int* size)
 {
 	int nb_lus;
 	int sockSize = sizeof(struct sockaddr_in);
 	struct sockaddr_in client;
 	
 	if ((nb_lus = recvfrom(sock, element[1], size[1], 0, (struct sockaddr *) &client, (socklen_t*)&sockSize)) == 0)
-		return;
+		return EXIT_FAILURE;
 		
 	if (nb_lus < 0) {
 		perror("read");
-		return;
+		return EXIT_FAILURE;
 	}
 	
 	write(STDOUT_FILENO, "recu\n", 6);
 
 	sendto(sock, element[0], size[0], 0, (struct sockaddr *) &client, sockSize);
+	
+	return EXIT_SUCCESS;
 }

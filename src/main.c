@@ -10,6 +10,9 @@
 #include "utils.h"
 #include "socket_utils.h"
 
+// NE PAS UTILISER LOCALHOST COMME ADRESSE DU SERVEUR ! IL FAUT UTILISER L'ADRESSE DE SOUS RÉSEAU
+// segfault bisare sur le pici de erwan
+
 //------------- new----------
 #define ALSA_PCM_NEW_HW_PARAMS_API
 
@@ -17,8 +20,8 @@
 
 //---------------------------
 
-void traitement_client(int sock, struct sockaddr_in * serveur, void* element, int *size);
-void traitement_serveur(int sock, void* element, int *size);
+int traitement_client(int sock, struct sockaddr_in * serveur, void* element, int *size);
+int traitement_serveur(int sock, void* element, int *size);
 
 int main (int argc, char *argv[])
 {
@@ -56,27 +59,21 @@ int main (int argc, char *argv[])
 	#endif
 	//------------------------------------------------------------------
 	// SON==============================================================
-	//#ifdef CLIENT
-		rc = snd_pcm_open(&handle[0], "default", SND_PCM_STREAM_CAPTURE, 0); /* Open PCM device for playback. */
-		
-		if (rc < 0) 
-		{
-			fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
-			exit(1);
-		}
+	rc = snd_pcm_open(&handle[0], "default", SND_PCM_STREAM_CAPTURE, 0); /* Open PCM device for playback. */
 	
-	//*#ifdef SERVEUR
-		
-		rc = snd_pcm_open(&handle[1], "default", SND_PCM_STREAM_PLAYBACK, 0);
-		
-		if (rc < 0) 
-		{
-			fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
-			exit(1);
-		}
-	//#endif */
+	if (rc < 0) 
+	{
+		fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
+		exit(1);
+	}
 	
+	rc = snd_pcm_open(&handle[1], "default", SND_PCM_STREAM_PLAYBACK, 0);
 	
+	if (rc < 0) 
+	{
+		fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
+		exit(1);
+	}
 	
 	for(int i=0;i<2;i++)
 	{
@@ -124,22 +121,24 @@ int main (int argc, char *argv[])
 			fprintf(stderr, "short read, read %d frames\n", rc);
 		
 		#ifdef SERVEUR
-			traitement_serveur(sock, buffer, size);
+			rc = traitement_serveur(sock, buffer, size);
 		#endif
 		#ifdef CLIENT
-			traitement_client(sock, &serveur, buffer, size);
+			rc = traitement_client(sock, &serveur, buffer, size);
         #endif
-        
-		rc = snd_pcm_writei(handle[1], buffer[1], frames[1]);
-		if (rc == -EPIPE) /* EPIPE means underrun */
+        if(rc == EXIT_SUCCESS)
 		{
-			fprintf(stderr, "underrun occurred\n");
-			snd_pcm_prepare(handle[1]);
-		} 
-		else if (rc < 0) 
-			fprintf(stderr, "error from writei: %s\n", snd_strerror(rc));
-		else if (rc != (int)frames[1]) 
-			fprintf(stderr, "short write, write %d frames\n", rc);
+			rc = snd_pcm_writei(handle[1], buffer[1], frames[1]);
+			if (rc == -EPIPE) /* EPIPE means underrun */
+			{
+				fprintf(stderr, "underrun occurred\n");
+				snd_pcm_prepare(handle[1]);
+			} 
+			else if (rc < 0) 
+				fprintf(stderr, "error from writei: %s\n", snd_strerror(rc));
+			else if (rc != (int)frames[1]) 
+				fprintf(stderr, "short write, write %d frames\n", rc);
+		}
 	}
 	
 	for(int i=0;i<2;i++)

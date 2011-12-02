@@ -11,14 +11,16 @@
 #include <sys/socket.h>
 
 
-void traitement_client(int sock, struct sockaddr_in * serveur, void** element, int* size)
+int traitement_client(int sock, struct sockaddr_in * serveur, void** element, int* size)
 {
 	int nb_lus;
 
 	sendto(sock, element[0], size[0], 0, (struct sockaddr *) serveur, sizeof (struct sockaddr_in));
 		
 	if ((nb_lus = recv(sock, element[1], size[1], MSG_DONTWAIT)) == 0)
-		return;
+		return EXIT_FAILURE;
 	
 	write(STDOUT_FILENO, "recu\n", 6);
+	
+	return EXIT_SUCCESS;
 }
