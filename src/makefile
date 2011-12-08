@@ -13,7 +13,7 @@ LDFALGS = $(LIB_PATH) $(LIBRARY)
 GCC=gcc
 
 # Name of the files (more .o)
-OBJS = main.o utils.o socket_utils.o client.o serveur.o
+OBJS = main.o utils.o socket_utils.o client.o serveur.o son.o
 # Path where the bin will be
 PGM_PATH = ./
 #names of the execs
