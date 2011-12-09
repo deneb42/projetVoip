@@ -1,15 +1,14 @@
+/* projetVoip					By : deneb					last modif : 09/12/11	   \
+\_____________________________________________________________________________________*/
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <arpa/inet.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <alsa/asoundlib.h>
 
 #include "utils.h"
 #include "socket_utils.h"
+#include "client_serveur.h"
 #include "son.h"
 
 #define TAILLE_LISTE 2
@@ -19,9 +18,6 @@
 // /!\ il y a un écho // surement une string ou une structure qui n'est pas réinitialisée
 
 // voir a utiliser directement une string d'ou on pourrait getID, get...
-
-int traitement_client(int sock, struct sockaddr_in * serveur, void* element);
-int traitement_serveur(int sock, void* element);
 
 int main (int argc, char *argv[])
 {
@@ -60,12 +56,14 @@ int main (int argc, char *argv[])
 	#endif
 	
 	printf("Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(serveur.sin_addr), ntohs(serveur.sin_port));
+	// Fin sockets
 	
 	if(initSon(CAPTURE, &val, &frames) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
 	if(initSon(PLAYBACK, &val, &frames) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
-		
+	// Fin son
+	
 	for(int i=0;i<TAILLE_LISTE;i++)
 	{
 		packetR[i].id=0;

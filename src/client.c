@@ -1,15 +1,9 @@
-/* client.c					By : deneb					last modif : 22/11/11		   \
+/* client.c						By : deneb					last modif : 09/12/11	   \
 \_____________________________________________________________________________________*/
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 #include <arpa/inet.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/types.h>
-#include <sys/socket.h>
 
 #include "utils.h"
 
@@ -17,7 +11,7 @@
 int traitement_client(int sock, struct sockaddr_in * serveur, s_MUV* packet)
 {
 	int nb_lus, nb_sent;
-	char str0[200], str1[200];
+	char str0[((const int)packet[0].size+sizeof(long))], str1[(packet[1].size+sizeof(long))];
 	
 	
 	MUVtoStr(packet, str0);

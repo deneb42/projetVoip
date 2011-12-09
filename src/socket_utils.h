@@ -1,4 +1,4 @@
-/* socket_utils.h					By : deneb					last modif : 22/11/11  \
+/* socket_utils.h				By : deneb					last modif : 09/12/11	   \
 \_____________________________________________________________________________________*/
 
 #ifndef SOCKET_UTILS_H

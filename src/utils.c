@@ -1,9 +1,13 @@
+/* utils.c						By : deneb					last modif : 09/12/11	   \
+\_____________________________________________________________________________________*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 #include "utils.h"
+
 
 void * MUVtoStr(s_MUV * packet, char* str)
 {

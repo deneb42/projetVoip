@@ -1,4 +1,4 @@
-/* son.h					By : deneb					last modif : 08/12/11		   \
+/* son.h						By : deneb					last modif : 09/12/11	   \
 \_____________________________________________________________________________________*/
 
 #ifndef SON_H
@@ -9,10 +9,10 @@
 	#define ALSA_PCM_NEW_HW_PARAMS_API
 	
 	#define CAPTURE 0
-	
 	#define PLAYBACK 1
 
 	int initSon(int mode, unsigned int *val, snd_pcm_uframes_t *frames);
+	
 	void closeSon();
 
 	void capture(char* str);
