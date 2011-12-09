@@ -14,7 +14,7 @@
 #include "utils.h"
 
 
-int traitement_client(int sock, struct sockaddr_in * serveur, s_MUV* packet, int* size)
+int traitement_client(int sock, struct sockaddr_in * serveur, s_MUV* packet)
 {
 	int nb_lus, nb_sent;
 	char str0[200], str1[200];

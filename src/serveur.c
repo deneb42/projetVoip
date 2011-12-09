@@ -13,7 +13,7 @@
 
 #include "utils.h"
 
-int traitement_serveur(int sock, s_MUV* packet, int* size)
+int traitement_serveur(int sock, s_MUV* packet)
 {
 	int nb_lus, nb_sent;
 	int sockSize = sizeof(struct sockaddr_in);

@@ -12,7 +12,8 @@
 	
 	#define PLAYBACK 1
 
-	int initSon(int mode, unsigned int *val, int *dir, snd_pcm_uframes_t *frames);
+	int initSon(int mode, unsigned int *val, snd_pcm_uframes_t *frames);
+	void closeSon();
 
 	void capture(char* str);
 

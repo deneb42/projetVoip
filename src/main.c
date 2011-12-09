@@ -20,8 +20,8 @@
 
 // voir a utiliser directement une string d'ou on pourrait getID, get...
 
-int traitement_client(int sock, struct sockaddr_in * serveur, void* element, int *size);
-int traitement_serveur(int sock, void* element, int *size);
+int traitement_client(int sock, struct sockaddr_in * serveur, void* element);
+int traitement_serveur(int sock, void* element);
 
 int main (int argc, char *argv[])
 {
@@ -31,10 +31,8 @@ int main (int argc, char *argv[])
 	s_MUV packetR[TAILLE_LISTE];//, packetS;
 	
 	// son
-	unsigned int val[2] = {11025, 11025};
-	snd_pcm_uframes_t frames[2] = {32, 32};
-	int size[2] = {128, 128}; /* 2 bytes/sample, 2 channels */
-	int dir[2];
+	unsigned int val = 11025;
+	snd_pcm_uframes_t frames = 32;
 	
 	// autres
 	char *address, *port;
@@ -63,16 +61,16 @@ int main (int argc, char *argv[])
 	
 	printf("Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(serveur.sin_addr), ntohs(serveur.sin_port));
 	
-	if(initSon(CAPTURE, val, dir, frames) == EXIT_FAILURE)
+	if(initSon(CAPTURE, &val, &frames) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
-	if(initSon(PLAYBACK, val+1, dir+1, frames+1) == EXIT_FAILURE)
+	if(initSon(PLAYBACK, &val, &frames) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
 		
 	for(int i=0;i<TAILLE_LISTE;i++)
 	{
 		packetR[i].id=0;
-		packetR[i].data = malloc(size[1]);
-		packetR[i].size = frames[i] * 4; /* 2 bytes/sample, 2 channels */
+		packetR[i].size = frames * 4; /* 2 bytes/sample, 2 channels */
+		packetR[i].data = malloc(packetR[i].size);
 	}
 	//packetS.id=0;
 	//packetS.data = malloc(size[0]);
@@ -85,10 +83,10 @@ int main (int argc, char *argv[])
 		capture(packetR[0].data);
 			
 		#ifdef SERVEUR
-			rc = traitement_serveur(sock, packetR, size);
+			rc = traitement_serveur(sock, packetR);
 		#endif
 		#ifdef CLIENT
-			rc = traitement_client(sock, &serveur, packetR, size);
+			rc = traitement_client(sock, &serveur, packetR);
         #endif
         
         if(rc == EXIT_SUCCESS)
@@ -99,13 +97,9 @@ int main (int argc, char *argv[])
 		else
 			fprintf(stderr, "Sending/ receiving error\n");
 	}
-	
-	/*for(int i=0;i<2;i++) // a revoir
-	{
-		snd_pcm_drain(handle[i]);
-		snd_pcm_close(handle[i]);
-		//free(buffer[i]);
-	}*/
+
+
+	closeSon();
 	
 	return EXIT_SUCCESS;
 }
