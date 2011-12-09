@@ -7,7 +7,15 @@
 	#include <alsa/asoundlib.h>
 	
 	#define ALSA_PCM_NEW_HW_PARAMS_API
+	
+	#define CAPTURE 0
+	
+	#define PLAYBACK 1
 
-	int initSon(char mode, snd_pcm_t **handle, snd_pcm_hw_params_t **params, unsigned int *val, int *dir, snd_pcm_uframes_t *frames);
+	int initSon(int mode, unsigned int *val, int *dir, snd_pcm_uframes_t *frames);
+
+	void capture(char* str);
+
+	void playback(char* str);
 
 #endif

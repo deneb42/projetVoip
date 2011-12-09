@@ -28,11 +28,9 @@ int main (int argc, char *argv[])
 	// socket
 	struct sockaddr_in serveur;
 	int sock;
-	s_MUV packetR[TAILLE_LISTE], packetS;
+	s_MUV packetR[TAILLE_LISTE];//, packetS;
 	
 	// son
-	snd_pcm_hw_params_t *params[2];
-	snd_pcm_t *handle[2];
 	unsigned int val[2] = {11025, 11025};
 	snd_pcm_uframes_t frames[2] = {32, 32};
 	int size[2] = {128, 128}; /* 2 bytes/sample, 2 channels */
@@ -56,7 +54,6 @@ int main (int argc, char *argv[])
 	#endif
 	#ifdef SERVEUR
 		set_udp_address(&serveur, port, NULL);
-		
 		if (bind(sock, (struct sockaddr *) &serveur, sizeof(struct sockaddr_in)) < 0) 
 		{
 			perror("bind");
@@ -66,9 +63,9 @@ int main (int argc, char *argv[])
 	
 	printf("Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(serveur.sin_addr), ntohs(serveur.sin_port));
 	
-	if(initSon('c', handle, params, val, dir, frames) == EXIT_FAILURE)
+	if(initSon(CAPTURE, val, dir, frames) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
-	if(initSon('p', handle+1, params+1, val+1, dir+1, frames+1) == EXIT_FAILURE)
+	if(initSon(PLAYBACK, val+1, dir+1, frames+1) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
 		
 	for(int i=0;i<TAILLE_LISTE;i++)
@@ -85,18 +82,8 @@ int main (int argc, char *argv[])
 	
 	while (1) // boucle principale
 	{
-		//capture(handle[0], 
-		rc = snd_pcm_readi(handle[0], packetR[0].data, frames[0]);
-		if (rc == -EPIPE) // EPIPE means overrun
-		{
-			fprintf(stderr, "overrun occurred\n");
-			snd_pcm_prepare(handle[0]);
-		}
-		else if (rc < 0)
-			fprintf(stderr, "error from read: %s\n", snd_strerror(rc));
-		else if (rc != (int)frames[1])
-			fprintf(stderr, "short read, read %d frames\n", rc);
-		
+		capture(packetR[0].data);
+			
 		#ifdef SERVEUR
 			rc = traitement_serveur(sock, packetR, size);
 		#endif
@@ -106,30 +93,19 @@ int main (int argc, char *argv[])
         
         if(rc == EXIT_SUCCESS)
 		{
-			rc = snd_pcm_writei(handle[1], packetR[1].data, frames[1]);
-			
-			if (rc == -EPIPE) // EPIPE means underrun
-			{
-				fprintf(stderr, "underrun occurred\n");
-				snd_pcm_prepare(handle[1]);
-			} 
-			else if (rc < 0) 
-				fprintf(stderr, "error from writei: %s\n", snd_strerror(rc));
-			else if (rc != (int)frames[1]) 
-				fprintf(stderr, "short write, write %d frames\n", rc);
-
 			(packetR[0].id)++;
+			playback(packetR[1].data);
 		}
 		else
 			fprintf(stderr, "Sending/ receiving error\n");
 	}
 	
-	for(int i=0;i<2;i++) // a revoir
+	/*for(int i=0;i<2;i++) // a revoir
 	{
 		snd_pcm_drain(handle[i]);
 		snd_pcm_close(handle[i]);
 		//free(buffer[i]);
-	}
+	}*/
 	
 	return EXIT_SUCCESS;
 }
