@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <alsa/asoundlib.h>
 
+
+
 int initSon(char mode, snd_pcm_t **handle, snd_pcm_hw_params_t **params, unsigned int *val, int *dir, snd_pcm_uframes_t *frames)
 {
 	int rc;

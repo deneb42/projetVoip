@@ -19,8 +19,10 @@ int set_address(struct sockaddr_in * address, unsigned short int type, char* por
 	memset(address, 0, sizeof (struct sockaddr_in));
 	
 	address->sin_family = type;
-
-	if (inet_aton(host, & (address->sin_addr)) == 0) 
+	
+	if(host==NULL)
+		address->sin_addr.s_addr = htonl(INADDR_ANY);
+	else if (inet_aton(host, & (address->sin_addr)) == 0) 
 	{
 		if ((hostent = gethostbyname(host)) == NULL) 
 		{

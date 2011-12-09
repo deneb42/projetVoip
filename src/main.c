@@ -14,9 +14,10 @@
 
 #define TAILLE_LISTE 2
 
-// NE PAS UTILISER LOCALHOST COMME ADRESSE DU SERVEUR ! IL FAUT UTILISER L'ADRESSE DE SOUS RÉSEAU
+// selection de l'adresse a amméliorer
 
-// /!\ il y a un écho
+// /!\ il y a un écho // surement une string ou une structure qui n'est pas réinitialisée
+
 // voir a utiliser directement une string d'ou on pourrait getID, get...
 
 int traitement_client(int sock, struct sockaddr_in * serveur, void* element, int *size);
@@ -49,15 +50,21 @@ int main (int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	
 	sock = sock_udp();
-	set_udp_address(&serveur, port, address);
 	
+	#ifdef CLIENT
+		set_udp_address(&serveur, port, address);
+	#endif
 	#ifdef SERVEUR
+		set_udp_address(&serveur, port, NULL);
+		
 		if (bind(sock, (struct sockaddr *) &serveur, sizeof(struct sockaddr_in)) < 0) 
 		{
 			perror("bind");
 			exit(EXIT_FAILURE);
 		}
 	#endif
+	
+	printf("Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(serveur.sin_addr), ntohs(serveur.sin_port));
 	
 	if(initSon('c', handle, params, val, dir, frames) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
