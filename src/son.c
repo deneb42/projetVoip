@@ -7,6 +7,7 @@
 
 #include "son.h"
 
+//a commenter pour faire passer
 
 snd_pcm_t *handle[2];
 snd_pcm_uframes_t frames;
