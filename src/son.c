@@ -60,7 +60,7 @@ int initSon(int mode, unsigned int *val, snd_pcm_uframes_t *f)
   
 	snd_pcm_hw_params_get_period_size(params, &frames, &dir); /* Use a buffer large enough to hold one period */
 
-	//snd_pcm_hw_params_get_period_time(params, val, &dir); /* We want to loop for 5 seconds */
+	//snd_pcm_hw_params_get_period_time(params, val, &dir);
 
 	return EXIT_SUCCESS;
 }

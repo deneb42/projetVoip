@@ -5,6 +5,18 @@ PROBLEME AVEC GTK REGLÉ PAR :
 gcc -Wall -c main.c $(pkg-config --cflags gtk+-2.0)
 gcc "-W|, --no-as-needed" -Wall -o testGTK main.o $(pkg-config --libs gtk+-2.0)
 
+	l’établissement de la communication,
+OK	l’enregistrement du signal sonore,
+	la compression des échantillons obtenus,
+	la mise sous forme de paquets des données,
+OK	l’envoi des données,
+OK	la réception des données et 
+	leur resynchronisation avec l’émetteur,
+OK	la dé-paquétisation des données,
+	la décompression des données,
+OK	l’envoi des échantillons vers le périphérique de sortie audio.
+	la fermeture de la communication.
+
 
 
 Permet l'envoi et la récéption de voix entre deux machines.

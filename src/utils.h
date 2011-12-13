@@ -17,6 +17,8 @@
 
 	void* strtoMUV(s_MUV * packet, char* str);
 
+	
+	void fnexit(int i);
 
 	int lecture_arguments (int argc, char * argv [], char** address, char** port);
 		/* reads the arguments and put them in the appropriate strings. if not given, initialize to default values */

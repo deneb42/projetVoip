@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <alsa/asoundlib.h>
+#include <signal.h>
 
 #include "utils.h"
 #include "socket_utils.h"
@@ -35,9 +36,11 @@ int main (int argc, char *argv[])
 	int rc;
 	
 	// Fin des variables
-	
+
 	
 	// Initialisation --------------------------------------------------
+	signal(SIGINT, fnexit); // pour désallouer mes handles
+	
 	if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
 	
@@ -77,8 +80,8 @@ int main (int argc, char *argv[])
 	
 	
 	while (1) // boucle principale
-	{
-		capture(packetR[0].data);
+	{	
+		capture(packetR[CAPTURE].data);
 			
 		#ifdef SERVEUR
 			rc = traitement_serveur(sock, packetR);
@@ -89,13 +92,14 @@ int main (int argc, char *argv[])
         
         if(rc == EXIT_SUCCESS)
 		{
-			(packetR[0].id)++;
-			playback(packetR[1].data);
+			(packetR[CAPTURE].id)++;
+			#ifdef CLIENT // DEBUG
+			playback(packetR[PLAYBACK].data);
+			#endif
 		}
 		else
 			fprintf(stderr, "Sending/ receiving error\n");
 	}
-
 
 	closeSon();
 	

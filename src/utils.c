@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include "utils.h"
+#include "son.h"
 
 
 void * MUVtoStr(s_MUV * packet, char* str)
@@ -23,6 +24,14 @@ void * strtoMUV(s_MUV * packet, char* str)
 	memcpy(packet->data, str+sizeof(long), packet->size);
 	
 	return packet;
+}
+
+void fnexit(int i)
+{
+	printf("Desallocation des handles\n");
+	closeSon();
+	printf("Fin\n");
+	exit(EXIT_SUCCESS);
 }
 
 
