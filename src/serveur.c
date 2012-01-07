@@ -8,27 +8,26 @@
 #include "utils.h"
 
 
-int traitement_serveur(int sock, s_MUV* packet)
+int traitement_serveur(int sock, s_MUV* packetS, s_MUV* packetR)
 {
 	int sockSize = sizeof(struct sockaddr_in);
 	struct sockaddr_in client;
 	
-	int nb_lus, nb_sent;
-	char str0[((const int)packet[0].size+sizeof(long))], str1[(packet[1].size+sizeof(long))];
+	int nbS, nbR;
+	char strS[((const int)packetS->size+sizeof(long))], strR[(packetR->size+sizeof(long))];
 	
-	if ((nb_lus = recvfrom(sock, str1, packet[1].size+sizeof(long), 0, (struct sockaddr *) &client, (socklen_t*)&sockSize)) <= 0)
+	if ((nbR = recvfrom(sock, strR, packetR->size+sizeof(long), 0, (struct sockaddr *) &client, (socklen_t*)&sockSize )) <= 0)
 		return EXIT_FAILURE;
 	
-	strtoMUV(packet+1, str1);
+	strtoMUV(packetR, strR);
 	
-	printf("recu paquet num %lu de : %d octets\n", packet[1].id, nb_lus);
+	printf("recu paquet num %lu de : %d octets\n", packetR->id, nbR);
 	
 	
-	MUVtoStr(packet, str0);
+	MUVtoStr(packetS, strS);
 
-	nb_sent = sendto(sock, str0, packet[0].size+sizeof(long), 0, (struct sockaddr *) &client, sockSize);
-	
-	printf("envoye paquet num %lu de : %d octets\n", packet[0].id, nb_sent);
-	
+	if((nbS = sendto(sock, strS, packetS->size+sizeof(long), 0, (struct sockaddr *) &client, sockSize)) > 0)
+		printf("envoye paquet num %lu de : %d octets\n", packetS->id, nbS);
+
 	return EXIT_SUCCESS;
 }

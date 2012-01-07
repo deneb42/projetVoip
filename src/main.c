@@ -12,11 +12,9 @@
 #include "client_serveur.h"
 #include "son.h"
 
-#define TAILLE_LISTE 2
+#define TAILLE_LISTE 1
 
 // selection de l'adresse a amméliorer
-
-// /!\ il y a un écho // surement une string ou une structure qui n'est pas réinitialisée
 
 // voir a utiliser directement une string d'ou on pourrait getID, get...
 
@@ -25,7 +23,7 @@ int main (int argc, char *argv[])
 	// socket
 	struct sockaddr_in serveur;
 	int sock;
-	s_MUV packetR[TAILLE_LISTE];//, packetS;
+	s_MUV packetR[TAILLE_LISTE], packetS;
 	
 	// son
 	unsigned int val = 11025;
@@ -73,28 +71,28 @@ int main (int argc, char *argv[])
 		packetR[i].size = frames * 4; /* 2 bytes/sample, 2 channels */
 		packetR[i].data = malloc(packetR[i].size);
 	}
-	//packetS.id=0;
-	//packetS.data = malloc(size[0]);
-	
+	packetS.id=0;
+	packetS.size = frames * 4; /* 2 bytes/sample, 2 channels */
+	packetS.data = malloc(packetS.size);
 	// Fin initialisation-----------------------------------------------
 	
 	
 	while (1) // boucle principale
 	{	
-		capture(packetR[CAPTURE].data);
+		capture(packetS.data);
 			
 		#ifdef SERVEUR
-			rc = traitement_serveur(sock, packetR);
+			rc = traitement_serveur(sock, &packetS, packetR);
 		#endif
 		#ifdef CLIENT
-			rc = traitement_client(sock, &serveur, packetR);
+			rc = traitement_client(sock, &serveur, &packetS, packetR);
         #endif
         
         if(rc == EXIT_SUCCESS)
 		{
-			(packetR[CAPTURE].id)++;
+			packetS.id++;
 			#ifdef CLIENT // DEBUG
-			playback(packetR[PLAYBACK].data);
+			playback(packetR[0].data);
 			#endif
 		}
 		else
