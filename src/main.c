@@ -12,11 +12,19 @@
 #include "client_serveur.h"
 #include "son.h"
 
-#define TAILLE_LISTE 1
+#define TAILLE_LISTE 4
+
+char continuer;
 
 // selection de l'adresse a amméliorer
 
 // voir a utiliser directement une string d'ou on pourrait getID, get...
+
+void fnexit(int i)
+{
+	continuer = 0;
+}
+
 
 int main (int argc, char *argv[])
 {
@@ -37,7 +45,8 @@ int main (int argc, char *argv[])
 
 	
 	// Initialisation --------------------------------------------------
-	signal(SIGINT, fnexit); // pour désallouer mes handles
+	continuer = 1;
+	signal(SIGINT, fnexit); // pour une sortie propre du programme
 	
 	if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
@@ -77,7 +86,7 @@ int main (int argc, char *argv[])
 	// Fin initialisation-----------------------------------------------
 	
 	
-	while (1) // boucle principale
+	while (continuer) // boucle principale
 	{	
 		capture(packetS.data);
 			
@@ -99,7 +108,15 @@ int main (int argc, char *argv[])
 			fprintf(stderr, "Sending/ receiving error\n");
 	}
 
+
+	printf("Desallocation des handles\n");
 	closeSon();
 	
+	printf("Desallocation des buffers\n");
+	for(int i=0;i<TAILLE_LISTE;i++)
+		free(packetR[i].data);
+	free(packetS.data);
+	
+	printf("Fin\n");
 	return EXIT_SUCCESS;
 }
