@@ -1,24 +1,30 @@
-/* client.c					By : deneb					last modif : 22/11/11		   \
+/* client.c						By : deneb					last modif : 09/12/11	   \
 \_____________________________________________________________________________________*/
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <arpa/inet.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+
+#include "utils.h"
 
 
-void traitement_client(int sock, struct sockaddr_in * serveur, void** element, int* size)
+int traitement_client(int sock, struct sockaddr_in * serveur, s_MUV* packetS, s_MUV* packetR)
 {
-	int nb_lus;
-
-	sendto(sock, element[0], size[0], 0, (struct sockaddr *) serveur, sizeof (struct sockaddr_in));
-		
-	if ((nb_lus = recv(sock, element[1], size[1], MSG_DONTWAIT)) == 0)
-		return;
+	int nbS, nbR;
+	char strS[((const int)packetS->size+sizeof(long))], strR[(packetR->size+sizeof(long))];
 	
-	write(STDOUT_FILENO, "recu\n", 6);
+	
+	MUVtoStr(packetS, strS);
+
+	if((nbS = sendto(sock, strS, packetS->size+sizeof(long), 0, (struct sockaddr *) serveur, sizeof(struct sockaddr_in) )) > 0)
+		printf("envoye paquet num %lu de : %d octets\n", packetS->id, nbS);
+	
+	if ((nbR = recv(sock, strR, packetR->size+sizeof(long), MSG_DONTWAIT)) <= 0)
+		return EXIT_FAILURE;
+		
+	strtoMUV(packetR, strR);
+	
+	printf("recu paquet num %lu de : %d octets\n", packetR->id, nbR);
+	
+	return EXIT_SUCCESS;
 }

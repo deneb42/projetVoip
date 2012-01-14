@@ -1,31 +1,33 @@
-/* serveur.c					By : deneb					last modif : 22/11/11	   \
+/* serveur.c					By : deneb					last modif : 09/12/11	   \
 \_____________________________________________________________________________________*/
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <arpa/inet.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+
+#include "utils.h"
 
 
-void traitement_serveur(int sock, void** element, int* size)
+int traitement_serveur(int sock, s_MUV* packetS, s_MUV* packetR)
 {
-	int nb_lus;
 	int sockSize = sizeof(struct sockaddr_in);
 	struct sockaddr_in client;
 	
-	if ((nb_lus = recvfrom(sock, element[1], size[1], 0, (struct sockaddr *) &client, (socklen_t*)&sockSize)) == 0)
-		return;
-		
-	if (nb_lus < 0) {
-		perror("read");
-		return;
-	}
+	int nbS, nbR;
+	char strS[((const int)packetS->size+sizeof(long))], strR[(packetR->size+sizeof(long))];
 	
-	write(STDOUT_FILENO, "recu\n", 6);
+	if ((nbR = recvfrom(sock, strR, packetR->size+sizeof(long), 0, (struct sockaddr *) &client, (socklen_t*)&sockSize )) <= 0)
+		return EXIT_FAILURE;
+	
+	strtoMUV(packetR, strR);
+	
+	printf("recu paquet num %lu de : %d octets\n", packetR->id, nbR);
+	
+	
+	MUVtoStr(packetS, strS);
 
-	sendto(sock, element[0], size[0], 0, (struct sockaddr *) &client, sockSize);
+	if((nbS = sendto(sock, strS, packetS->size+sizeof(long), 0, (struct sockaddr *) &client, sockSize)) > 0)
+		printf("envoye paquet num %lu de : %d octets\n", packetS->id, nbS);
+
+	return EXIT_SUCCESS;
 }

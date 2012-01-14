@@ -1,24 +1,24 @@
-#|  voip makefile                   |
+#|  projetVoip makefile             |
 #|                                  |
 #|  by :deneb                       |
-#|  last modif : 22/11/11           |
+#|  last modif : 09/12/11           |
 #/__________________________________/
 
 
-INC_PATH =
+INC_PATH = 
 LIB_PATH = 
 LIBRARY = -lasound
-CFLAGS = -Wall -pedantic -std=c99 -D_GNU_SOURCE
+CFLAGS = -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE
 LDFALGS = $(LIB_PATH) $(LIBRARY)
 GCC=gcc
 
 # Name of the files (more .o)
-OBJS = main.o utils.o socket_utils.o client.o serveur.o
+OBJS = utils.o socket_utils.o son.o
 # Path where the bin will be
 PGM_PATH = ./
 #names of the execs
-CLIENT = client
-SERVEUR = serveur
+CLIENT = main.o client.o
+SERVEUR = main.o serveur.o
 
 # For the generic utilisation, 
 # DO NOT TOUCH ANYTHING UNDER THIS LINE !!!
@@ -27,11 +27,11 @@ SERVEUR = serveur
 # $(OBJS:.o=_client.o ) 
 all : client serveur
 
-client : $(OBJS:.o=_client.o ) 
-	$(GCC) -o $(PGM_PATH)$(CLIENT) $(OBJS:.o=_client.o )  $(LDFALGS) 
+client : $(CLIENT:.o=_client.o ) $(OBJS)
+	$(GCC) -o $(PGM_PATH)client $(CLIENT:.o=_client.o ) $(OBJS) $(LDFALGS) 
 	
-serveur : $(OBJS:.o=_serveur.o )
-	$(GCC) -o $(PGM_PATH)$(SERVEUR) $(OBJS:.o=_serveur.o ) $(LDFALGS)
+serveur : $(SERVEUR:.o=_serveur.o ) $(OBJS)
+	$(GCC) -o $(PGM_PATH)serveur $(SERVEUR:.o=_serveur.o ) $(OBJS) $(LDFALGS)
 
 # generic method for all the .o
 
@@ -51,4 +51,4 @@ clean :
 	-rm *.o *~
 	
 cleanmax : clean
-	-rm $(PGM_PATH)$(CLIENT) $(PGM_PATH)$(SERVEUR)
+	-rm $(PGM_PATH)client $(PGM_PATH)serveur
