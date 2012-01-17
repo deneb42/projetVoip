@@ -8,6 +8,7 @@ to the default PCM device for 5 seconds of data.
 /* Use the newer ALSA API */
 #define ALSA_PCM_NEW_HW_PARAMS_API
 
+#include <stdio.h>
 #include <alsa/asoundlib.h>
 
 int main() {
@@ -82,7 +83,7 @@ int main() {
    * period time */
   loops = 5000000 / val;
 
-  while (1){//loops > 0) {
+  while (1){/*loops > 0) {*/
     loops--;
     rc = read(0, buffer, size);
     if (rc == 0) {
