@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <unistd.h>
+#include <pthread.h>
 
 pthread_t * threads[2];
 

@@ -8,21 +8,29 @@
 #include "utils.h"
 
 
-int traitement_client(int sock, struct sockaddr_in * serveur, s_MUV* packetS, s_MUV* packetR)
+int snd_client(int sock, struct sockaddr_in * serveur, s_MUV* packetS)
 {
-	int nbS, nbR;
-	char strS[((const int)packetS->size+sizeof(long))], strR[(packetR->size+sizeof(long))];
+	int nbS;
+	char strS[((const int)packetS->size+sizeof(long))];
 	
 	
 	MUVtoStr(packetS, strS);
 
 	if((nbS = sendto(sock, strS, packetS->size+sizeof(long), 0, (struct sockaddr *) serveur, sizeof(struct sockaddr_in) )) > 0)
 		printf("envoye paquet num %lu de : %d octets\n", packetS->id, nbS);
+
+	return EXIT_SUCCESS;
+}
+
+int rcv_client(int sock, s_MUV* packetR)
+{
+	int nbR;
+	char strR[(packetR->size+sizeof(long))];
 	
 	if ((nbR = recv(sock, strR, packetR->size+sizeof(long), MSG_DONTWAIT)) <= 0)
 		return EXIT_FAILURE;
 	
-	strtoMUV(packetR+(getIndex(strR)%TAILLE_LISTE), strR);
+	strtoMUV(packetR, strR);
 	
 	printf("recu paquet num %lu de : %d octets\n", packetR->id, nbR);
 	

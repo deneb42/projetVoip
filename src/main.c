@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <alsa/asoundlib.h>
 #include <signal.h>
+#include <pthread.h>
 
 #include "utils.h"
 #include "socket_utils.h"
@@ -85,31 +86,8 @@ int launch (char* paradd, pthread_t** threads)
 	packetS.data = malloc(packetS.size);
 	// Fin initialisation-----------------------------------------------
 	
-	
-	while (continuer) // boucle principale
-	{	
-		capture(packetS.data);
-			
-		#ifdef SERVEUR
-			rc = traitement_serveur(sock, &packetS, packetR);
-		#endif
-		#ifdef CLIENT
-			rc = traitement_client(sock, &serveur, &packetS, packetR);
-        #endif
-        
-        if(rc == EXIT_SUCCESS)
-		{
-			packetS.id++;
-			#ifdef CLIENT // DEBUG
-			playback(packetR[index%TAILLE_LISTE].data);
-			//playback(packetR->data);
-			#endif
-			memset(packetR[index%TAILLE_LISTE].data, 0, packetR[index%TAILLE_LISTE].size);
-			index++;
-		}
-		else
-			fprintf(stderr, "Sending/ receiving error\n");
-	}
+	pthread_create(threads[CAPTURE],
+	pthread_create(threads[PLAYBACK],
 
 
 	printf("Desallocation des handles\n");
@@ -122,4 +100,52 @@ int launch (char* paradd, pthread_t** threads)
 	
 	printf("Fin\n");
 	return EXIT_SUCCESS;
+}
+
+
+void* boucle_capture(void* arg)
+{
+	while (true) // boucle principale
+	{	
+		capture(packetS.data);
+			
+		#ifdef SERVEUR
+			rc = snd_serveur(sock, &client, &packetS);
+		#endif
+		#ifdef CLIENT
+			rc = snd_client(sock, &serveur, &packetS);
+        #endif
+        
+        if(rc != EXIT_FAILURE)
+			packetS.id++;
+		else
+			fprintf(stderr, "Sending error\n");
+	}
+}
+
+void* boucle_playback(void* arg)
+{
+	int cont, index=0;
+	
+	while (true) // boucle principale
+	{	
+       
+		#ifdef SERVEUR
+			rc = rcv_serveur(sock, packetR + (index%TAILLE_LISTE) );
+		#endif
+		#ifdef CLIENT
+			rc = rcv_client(sock, packetR + (index%TAILLE_LISTE) );
+		#endif
+		
+		if(rc!=EXIT_FAILURE)
+			#ifdef CLIENT // DEBUG
+			playback(packetR[index%TAILLE_LISTE].data);
+			//playback(packetR->data);
+			#endif
+			memset(packetR[index%TAILLE_LISTE].data, 0, packetR[index%TAILLE_LISTE].size);
+			index++;
+		}
+		else
+			fprintf(stderr, "Receiving error\n");
+	}
 }

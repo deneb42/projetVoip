@@ -1,13 +1,13 @@
 #|  projetVoip makefile             |
 #|                                  |
 #|  by :deneb                       |
-#|  last modif : 09/12/11           |
+#|  last modif : 17/01/12           |
 #/__________________________________/
 
 
 INC_PATH = 
 LIB_PATH = 
-LIBRARY = -lasound `pkg-config --libs gtk+-2.0`
+LIBRARY = -lasound -pthread `pkg-config --libs gtk+-2.0`
 CFLAGS = -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`
 LDFALGS = $(LIB_PATH) $(LIBRARY)
 GCC=gcc
