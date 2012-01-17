@@ -24,7 +24,7 @@ void fnexit(int i)
 }
 
 
-int launch (char* paradd)
+int launch (char* paradd, pthread_t** threads)
 {
 	// socket
 	struct sockaddr_in serveur;

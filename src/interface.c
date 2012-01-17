@@ -2,6 +2,8 @@
 #include <gtk/gtk.h>
 #include <unistd.h>
 
+pthread_t * threads[2];
+
 void on_clicked_button(GtkWidget *pButton, gpointer data);
 
 int main(int argc, char **argv)
@@ -84,6 +86,6 @@ void on_clicked_button(GtkWidget *pButton, gpointer data)
 	/*const char *port;*/
 	/* Recuperation du texte contenu dans le GtkEntry */
     	adresse = gtk_entry_get_text(GTK_ENTRY((GtkWidget*)data));
-    launch(adresse);
+    launch(adresse, threads);
 }
 
