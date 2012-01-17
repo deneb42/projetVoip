@@ -7,7 +7,6 @@
 #include <unistd.h>
 
 #include "utils.h"
-#include "son.h"
 
 
 void * MUVtoStr(s_MUV * packet, char* str)
@@ -25,15 +24,6 @@ void * strtoMUV(s_MUV * packet, char* str)
 	
 	return packet;
 }
-
-void fnexit(int i)
-{
-	printf("Desallocation des handles\n");
-	closeSon();
-	printf("Fin\n");
-	exit(EXIT_SUCCESS);
-}
-
 
 int lecture_arguments (int argc, char * argv [], char** address, char** port)
 { /* reads the arguments and put them in the appropriate strings. if not given, initialize to default values */
