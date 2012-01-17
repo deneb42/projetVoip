@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
+#include <unistd.h>
 
-void on_activate_entry(GtkWidget *pEntry, gpointer data);
 void on_clicked_button(GtkWidget *pButton, gpointer data);
 
 int main(int argc, char **argv)
@@ -12,7 +12,8 @@ int main(int argc, char **argv)
     	GtkWidget *pFrame;
     	GtkWidget *pVBoxFrame;
     	GtkWidget *pSeparator;
-    	GtkWidget *pEntry;
+    	GtkWidget *pEntry1;
+	GtkWidget *pEntry2;
     	GtkWidget *pButton;
 	GtkWidget *pLabel;
 
@@ -49,12 +50,12 @@ int main(int argc, char **argv)
     	/* Creation et insertion des elements contenus dans le premier GtkFrame */
     	pLabel = gtk_label_new("Adresse :");
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, TRUE, 0);
-    	pEntry = gtk_entry_new();
-    	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry, TRUE, FALSE, 0);
+    	pEntry1 = gtk_entry_new();
+    	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry1, TRUE, FALSE, 0);
     	pLabel = gtk_label_new("N° de port :");
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, FALSE, 0);
-    	pEntry = gtk_entry_new();
-    	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry, TRUE, FALSE, 0);
+    	pEntry2 = gtk_entry_new();
+    	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry2, TRUE, FALSE, 0);
 
     	/* Creation d un GtkHSeparator */
     	pSeparator = gtk_hseparator_new();
@@ -64,13 +65,10 @@ int main(int argc, char **argv)
     	pButton = gtk_button_new_with_label("Connexion");
     	gtk_box_pack_start(GTK_BOX(pVBox), pButton, TRUE, FALSE, 0);
 
-    	/* Connexion du signal "activate" du GtkEntry */
-    	/*g_signal_connect(G_OBJECT(pEntry), "activate", G_CALLBACK(on_activate_entry), NULL);*/
-
     	/* Connexion du signal "clicked" du GtkButton */
-    	/*g_signal_connect(G_OBJECT(pButton), "clicked", G_CALLBACK(on_copier_buttonon_clicked_button), NULL);*/
+    	g_signal_connect(G_OBJECT(pButton), "clicked", G_CALLBACK(on_clicked_button), (GtkWidget*) pEntry1);
 	
-	/* Affichage de la fenetre et de tout ce qu'il contient */
+	/* Affichage de la fenetre et de tout ce qu'elle contient */
     	gtk_widget_show_all(pWindow);
 	
 	/* Demarrage de la boucle evenementielle */
@@ -79,4 +77,12 @@ int main(int argc, char **argv)
     	return EXIT_SUCCESS;
 }
 
+void on_clicked_button(GtkWidget *pButton, gpointer data)
+{
+	const gchar *adresse;
+	/*const char *port;*/
+	/* Recuperation du texte contenu dans le GtkEntry */
+    	adresse = gtk_entry_get_text(GTK_ENTRY((GtkWidget*)data));
+	execlp ("serveur.sh", adresse, NULL); 
+}
 
