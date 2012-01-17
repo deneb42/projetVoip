@@ -24,7 +24,7 @@ void fnexit(int i)
 }
 
 
-int main (int argc, char *argv[])
+int launch (char* paradd)
 {
 	// socket
 	struct sockaddr_in serveur;
@@ -37,7 +37,7 @@ int main (int argc, char *argv[])
 	snd_pcm_uframes_t frames = 32;
 	
 	// autres
-	char *address, *port;
+	char *address, port[] = "2000";
 	int rc;
 	
 	// Fin des variables
@@ -47,8 +47,9 @@ int main (int argc, char *argv[])
 	continuer = 1;
 	signal(SIGINT, fnexit); // pour une sortie propre du programme
 	
-	if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
-		exit(EXIT_FAILURE);
+	//if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
+	//	exit(EXIT_FAILURE);
+	address = paradd;
 	
 	sock = sock_udp();
 	
