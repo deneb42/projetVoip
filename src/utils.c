@@ -25,6 +25,14 @@ void * strtoMUV(s_MUV * packet, char* str)
 	return packet;
 }
 
+int getIndex(char* str)
+{
+	int id;
+	memcpy(str, &id, sizeof(long));
+	
+	return id;
+}
+
 int lecture_arguments (int argc, char * argv [], char** address, char** port)
 { /* reads the arguments and put them in the appropriate strings. if not given, initialize to default values */
 

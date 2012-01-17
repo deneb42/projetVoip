@@ -21,8 +21,8 @@ int traitement_client(int sock, struct sockaddr_in * serveur, s_MUV* packetS, s_
 	
 	if ((nbR = recv(sock, strR, packetR->size+sizeof(long), MSG_DONTWAIT)) <= 0)
 		return EXIT_FAILURE;
-		
-	strtoMUV(packetR, strR);
+	
+	strtoMUV(packetR+(getIndex(strR)%TAILLE_LISTE), strR);
 	
 	printf("recu paquet num %lu de : %d octets\n", packetR->id, nbR);
 	

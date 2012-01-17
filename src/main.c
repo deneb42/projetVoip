@@ -12,8 +12,6 @@
 #include "client_serveur.h"
 #include "son.h"
 
-#define TAILLE_LISTE 4
-
 char continuer;
 
 // selection de l'adresse a amméliorer
@@ -32,6 +30,7 @@ int main (int argc, char *argv[])
 	struct sockaddr_in serveur;
 	int sock;
 	s_MUV packetR[TAILLE_LISTE], packetS;
+	int index = 0;
 	
 	// son
 	unsigned int val = 11025;
@@ -101,8 +100,11 @@ int main (int argc, char *argv[])
 		{
 			packetS.id++;
 			#ifdef CLIENT // DEBUG
-			playback(packetR[0].data);
+			playback(packetR[index%TAILLE_LISTE].data);
+			//playback(packetR->data);
 			#endif
+			memset(packetR[index%TAILLE_LISTE].data, 0, packetR[index%TAILLE_LISTE].size);
+			index++;
 		}
 		else
 			fprintf(stderr, "Sending/ receiving error\n");
