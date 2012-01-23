@@ -103,6 +103,9 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 	const gchar *adress;
 	const gchar *port;
 	
+	port="2525";
+	adress="localhost"
+	
     	/* Recuperation de la liste des elements que contient la GtkVBox */
     	pList = gtk_container_get_children(GTK_CONTAINER((GtkWidget*)data));
 
@@ -133,12 +136,7 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
     	g_list_free(pList);
 }
 
-void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data)
+/*void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data)
 {	
-	/*Chargement des parametres d arriere plan */
-	/*gtk_rc_parse("./window.rc");*/
-	
-	/* Affichage de la fenetre et de tout ce qu'elle contient */
-    	/*gtk_widget_show_all(GTK_WIDGET((GtkWidget*)data));*/
-}
+}*/
 
