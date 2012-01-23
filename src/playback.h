@@ -6,6 +6,5 @@
 
 	int init_playback();
 	void* boucle_playback(void* arg);
-	void clean_playback(void* arg);
 	
 #endif

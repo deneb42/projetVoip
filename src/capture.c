@@ -12,19 +12,11 @@
 #include "son.h"
 #include "capture.h"
 
-
-void clean_capture(void *arg)
-{
-	closeSon(CAPTURE);
-	
-	printf("[I] Desallocation du buffers d'envoi\n");
-	free(((s_MUV*)arg)->data);
-}
-
 void * boucle_capture(void *arg)
 {
+	printf("lalz\n");
 	s_par_thread param = *((s_par_thread*)arg);
-	
+	printf("lulz\n");
 	s_MUV packetS;
 	int rc=EXIT_SUCCESS;
 	
@@ -32,20 +24,19 @@ void * boucle_capture(void *arg)
 		exit(EXIT_FAILURE);
 	
 	packetS.id=0;
-	packetS.size = param.frames * 4; /* 2 bytes/sample, 2 channels */
-	packetS.data = malloc(packetS.size);
-	
-	pthread_cleanup_push(clean_capture,&packetS);
+	//packetS.size = param.frames * 4; /* 2 bytes/sample, 2 channels */
+	//packetS.data = malloc(packetS.size);
 	
 	while(1) // boucle principale
 	{	
 		capture(packetS.data);
-			
+		printf("lol\n");
 		#ifdef SERVEUR
 			rc = snd_serveur(param.sock, &(param.client), &packetS);
 		#endif
 		#ifdef CLIENT
 			rc = snd_client(param.sock, &(param.serveur), &packetS);
+			pritnf("lulz\n");
         #endif
         
         if(rc != EXIT_FAILURE)
@@ -53,5 +44,6 @@ void * boucle_capture(void *arg)
 		else
 			fprintf(stderr, "[E] Sending error\n");
 	}
+	
 	return EXIT_SUCCESS;
 }

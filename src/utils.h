@@ -3,15 +3,19 @@
 
 #ifndef UTILS_H
 #define UTILS_H
+	
+	#include <arpa/inet.h>
+	#include <alsa/asoundlib.h>
 
 	#define TAILLE_LISTE 4
+	#define SIZE_PACKET 128
 
 	typedef struct t_MUV
 	{
 		unsigned long id;
 		//char *ip_dest;
-		char *data;
-		int size;
+		char data[SIZE_PACKET];
+		//int size;
 	} s_MUV;
 	
 	typedef struct t_par_thread
@@ -29,6 +33,8 @@
 	void* strtoMUV(s_MUV * packet, char* str);
 	
 	int getIndex(char* str);
+	
+	int launch (char* paradd, pthread_t* threads);
 
 	int lecture_arguments (int argc, char * argv [], char** address, char** port);
 		/* reads the arguments and put them in the appropriate strings. if not given, initialize to default values */

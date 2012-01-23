@@ -13,20 +13,11 @@
 #include "playback.h"
 
 
-void clean_playback(void* arg)
-{
-	closeSon(PLAYBACK);
-	
-	printf("[I] Desallocation des buffers\n");
-	for(int i=0;i<TAILLE_LISTE;i++)
-		free(((s_MUV*)arg)[i].data);
-}
-
 void* boucle_playback(void* arg)
 {
 	s_par_thread param = *((s_par_thread*)arg);
 	
-	int rc, index=0;
+	int rc=EXIT_SUCCESS, index=0;
 	s_MUV packetR[TAILLE_LISTE];
 	
 	
@@ -36,11 +27,11 @@ void* boucle_playback(void* arg)
 	for(int i=0;i<TAILLE_LISTE;i++)
 	{
 		packetR[i].id=0;
-		packetR[i].size = param.frames * 4; /* 2 bytes/sample, 2 channels */
-		packetR[i].data = malloc(packetR[i].size);
+		//packetR[i].size = param.frames * 4; /* 2 bytes/sample, 2 channels */
+		//packetR[i].data = malloc(packetR[i].size);
 	}
 	
-	pthread_cleanup_push(clean_playback, packetR);
+	//pthread_cleanup_push(clean_playback, packetR);
 	
 	while (1) // boucle principale
 	{	
@@ -58,7 +49,7 @@ void* boucle_playback(void* arg)
 			playback(packetR[index%TAILLE_LISTE].data);
 			//playback(packetR->data);
 			#endif
-			memset(packetR[index%TAILLE_LISTE].data, 0, packetR[index%TAILLE_LISTE].size);
+			//memset(packetR[index%TAILLE_LISTE].data, 0, packetR[index%TAILLE_LISTE].size);
 			index++;
 		}
 		else

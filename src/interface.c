@@ -3,7 +3,9 @@
 #include <unistd.h>
 #include <pthread.h>
 
-pthread_t * threads[2];
+#include "utils.h"
+
+pthread_t threads[2];
 
 void on_clicked_button(GtkWidget *pButton, gpointer data);
 
@@ -76,13 +78,13 @@ int main(int argc, char **argv)
 	
 	/* Demarrage de la boucle evenementielle */
     	gtk_main();
-
+		printf("mouau\n");
     	return EXIT_SUCCESS;
 }
 
 void on_clicked_button(GtkWidget *pButton, gpointer data)
 {
-	const gchar *adresse;
+	gchar *adresse;
 	printf("coucou\n");
 	/*const char *port;*/
 	/* Recuperation du texte contenu dans le GtkEntry */
@@ -90,3 +92,5 @@ void on_clicked_button(GtkWidget *pButton, gpointer data)
     launch(adresse, threads);
 }
 
+//closeSon(CAPTURE);
+//closeSon(PLAYBACK);

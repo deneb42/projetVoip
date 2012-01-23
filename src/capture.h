@@ -6,6 +6,5 @@
 
 	int init_capture();
 	void* boucle_capture(void* arg);
-	void clean_capture(void* arg);
 	
 #endif

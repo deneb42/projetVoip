@@ -23,7 +23,7 @@
 // voir a utiliser directement une string d'ou on pourrait getID, get...
 
 
-int launch (char* paradd, pthread_t** threads)
+int launch (char* paradd, pthread_t* threads)
 {
 	char *address, port[] = "2000";
 	s_par_thread param;
@@ -31,7 +31,7 @@ int launch (char* paradd, pthread_t** threads)
 	
 	// pour le son
 	param.val = 11025;
-	param.frames = 32;
+	param.frames = SIZE_PACKET / 4; // 2 bytes par channel, 2 channels
 	
 	//if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
 	//	exit(EXIT_FAILURE);
@@ -53,10 +53,11 @@ int launch (char* paradd, pthread_t** threads)
 	
 	printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param.serveur.sin_addr), ntohs(param.serveur.sin_port));
 	// Fin sockets
-	
-	pthread_create(threads[CAPTURE], 0, &boucle_capture, &param);
-	pthread_create(threads[PLAYBACK], 0, &boucle_playback, &param);
-
+	printf("lol : %d\n", sizeof(s_MUV));
+	pthread_create(threads + CAPTURE, 0, boucle_capture, &param);
+	printf("lol\n");
+	pthread_create(threads + PLAYBACK, 0, boucle_playback, &param);
+	printf("lil\n");
 	return EXIT_SUCCESS;
 }
 
