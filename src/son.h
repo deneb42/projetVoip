@@ -13,7 +13,7 @@
 
 	int initSon(int mode, unsigned int *val, snd_pcm_uframes_t *frames);
 	
-	void closeSon();
+	void closeSon(int mode);
 
 	void capture(char* str);
 

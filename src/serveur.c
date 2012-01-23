@@ -22,7 +22,7 @@ int snd_serveur(int sock, struct sockaddr_in * client, s_MUV* packetS)
 	return EXIT_SUCCESS;
 }
 
-struct sockaddr_in rcv_serveur(int sock, struct sockaddr_in * client, s_MUV* packetR)
+int rcv_serveur(int sock, struct sockaddr_in * client, s_MUV* packetR)
 {
 	int sockSize = sizeof(struct sockaddr_in);
 	

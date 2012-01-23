@@ -13,6 +13,15 @@
 		char *data;
 		int size;
 	} s_MUV;
+	
+	typedef struct t_par_thread
+	{
+		struct sockaddr_in serveur, client;
+		int sock;
+
+		unsigned int val;
+		snd_pcm_uframes_t frames;
+	} s_par_thread;
 
 	
 	void* MUVtoStr(s_MUV * packet, char* str);

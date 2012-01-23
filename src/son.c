@@ -65,12 +65,16 @@ int initSon(int mode, unsigned int *val, snd_pcm_uframes_t *f)
 	return EXIT_SUCCESS;
 }
 
-void closeSon()
+void closeSon(int mode)
 {
-	snd_pcm_drain(handle[CAPTURE]);
-	snd_pcm_close(handle[CAPTURE]);
-	snd_pcm_drain(handle[PLAYBACK]);
-	snd_pcm_close(handle[PLAYBACK]);
+	printf("[I] Desallocation du handle de ");
+	if(mode==CAPTURE)
+		printf("capture\n");
+	else
+		printf("lecture\n");
+		
+	snd_pcm_drain(handle[mode]);
+	snd_pcm_close(handle[mode]);
 }
 
 void capture(char* str)
