@@ -7,7 +7,7 @@
 #include "son.h"
 
 pthread_t threads[2];
-
+int status;
 
 void on_clicked_button_connection(GtkWidget *pButton, gpointer data);
 void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data);
@@ -28,6 +28,7 @@ int main(int argc, char **argv)
 	GtkWidget *pImage;
 
     	gtk_init(&argc, &argv);
+    status = 0;
 
 	/*Chargement des parametres d arriere plan */
 	gtk_rc_parse("./window.rc");
@@ -111,10 +112,18 @@ int main(int argc, char **argv)
 
 void on_clicked_button_deco(GtkWidget *pButton, gpointer data)
 {
-	closeSon(CAPTURE);
-	pthread_cancel(threads[CAPTURE]);
-	closeSon(PLAYBACK);
-	pthread_cancel(threads[PLAYBACK]);
+	if(status == 1)
+	{
+		#ifdef CLIENT
+		pthread_cancel(threads[CAPTURE]);
+		closeSon(CAPTURE);
+		#endif
+		#ifdef SERVEUR
+		pthread_cancel(threads[PLAYBACK]);
+		closeSon(PLAYBACK);
+		#endif
+		status = 0;
+	}
 }
 
 void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
@@ -124,6 +133,8 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 	const gchar *adress;
 	const gchar *port;
 	
+	if(status == 0)
+	{
     	/* Recuperation de la liste des elements que contient la GtkVBox */
     	pList = gtk_container_get_children(GTK_CONTAINER((GtkWidget*)data));
 
@@ -150,6 +161,8 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 
 	/* Liberation de la memoire utilisee par la liste */
     	g_list_free(pList);
+		status = 1;
+	}
 }
 
 void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data)

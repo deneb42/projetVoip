@@ -14,7 +14,15 @@
 
 void * boucle_capture(void *arg)
 {
-	s_par_thread param = *((s_par_thread*)arg);
+	s_par_thread param, tmp = *((s_par_thread*)arg);
+	
+	param.serveur = tmp.serveur;
+	param.client = tmp.client;
+	param.sock = tmp.sock;
+	
+	param.val = tmp.val;
+	param.frames = tmp.frames;
+	printf("sock : %d\n", param.sock);
 	
 	s_MUV packetS;
 	int rc=EXIT_SUCCESS;
@@ -26,19 +34,19 @@ void * boucle_capture(void *arg)
 	//packetS.size = param.frames * 4; /* 2 bytes/sample, 2 channels */
 	//packetS.data = malloc(packetS.size);
 	
-	while(1) // boucle principale
+	//while(1) // boucle principale
 	{	
 		printf("lolswcvnjhsfjksd\n");
 		capture(packetS.data);
 		printf("lol\n");
 		#ifdef SERVEUR
 			rc = snd_serveur(param.sock, &(param.client), &packetS);
-			pritnf("moui\n");
+			printf("moui\n");
 		#endif
 		#ifdef CLIENT
-			pritnf("gogels \n");
+			printf("gogels \n");
 			rc = snd_client(param.sock, &(param.serveur), &packetS);
-			pritnf("lulz\n");
+			printf("lulz\n");
         #endif
         
         if(rc != EXIT_FAILURE)

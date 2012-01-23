@@ -17,6 +17,7 @@
 
 //problème : l'adresse du client n'est pas gardé entre récéption et envoi
 
+// on doit perdre le socket quelque part, erreur a l'envoi><<<<<<>>>
 
 // selection de l'adresse a amméliorer
 
