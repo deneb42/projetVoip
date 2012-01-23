@@ -1,4 +1,4 @@
-pixmap_path "./"
+pixmap_path "../img/"
  
 style "Windows"
 {

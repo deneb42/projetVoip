@@ -34,7 +34,7 @@
 	
 	int getIndex(char* str);
 	
-	int launch (char* paradd, pthread_t* threads);
+	int launch (char* paradd, char* port, pthread_t* threads);
 
 	int lecture_arguments (int argc, char * argv [], char** address, char** port);
 		/* reads the arguments and put them in the appropriate strings. if not given, initialize to default values */

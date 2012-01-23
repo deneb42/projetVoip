@@ -23,7 +23,7 @@
 // voir a utiliser directement une string d'ou on pourrait getID, get...
 
 
-int launch (char* paradd, pthread_t* threads)
+int launch (char* paradd, char* parport, pthread_t* threads)
 {
 	char *address, port[] = "2000";
 	s_par_thread param;
@@ -36,7 +36,7 @@ int launch (char* paradd, pthread_t* threads)
 	//if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
 	//	exit(EXIT_FAILURE);
 	address = paradd;
-	port = parport;
+	strcpy(port, parport);
 	
 	param.sock = sock_udp();
 	
