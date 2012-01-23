@@ -25,7 +25,7 @@
 
 int launch (char* paradd, char* parport, pthread_t* threads)
 {
-	char *address, port[] = "2000";
+	char *address, *port;
 	s_par_thread param;
 	// param contient les variables nécéssaires dans les threads pour le son et les socket
 	
@@ -36,7 +36,7 @@ int launch (char* paradd, char* parport, pthread_t* threads)
 	//if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
 	//	exit(EXIT_FAILURE);
 	address = paradd;
-	strcpy(port, parport);
+	port = parport;
 	
 	param.sock = sock_udp();
 	
@@ -54,11 +54,13 @@ int launch (char* paradd, char* parport, pthread_t* threads)
 	
 	printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param.serveur.sin_addr), ntohs(param.serveur.sin_port));
 	// Fin sockets
-	printf("lol : %d\n", sizeof(s_MUV));
+	
+	#ifdef CLIENT
 	pthread_create(threads + CAPTURE, 0, boucle_capture, &param);
-	printf("lol\n");
+	#endif
+	#ifdef SERVEUR
 	pthread_create(threads + PLAYBACK, 0, boucle_playback, &param);
-	printf("lil\n");
+	#endif
 	return EXIT_SUCCESS;
 }
 

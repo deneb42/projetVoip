@@ -11,6 +11,7 @@ pthread_t threads[2];
 
 void on_clicked_button_connection(GtkWidget *pButton, gpointer data);
 void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data);
+void on_clicked_button_deco(GtkWidget *pButton, gpointer data);
 
 int main(int argc, char **argv)
 {
@@ -21,7 +22,8 @@ int main(int argc, char **argv)
     	GtkWidget *pVBoxFrame;
     	GtkWidget *pSeparator;
     	GtkWidget *pEntry;
-	GtkWidget *pButton;
+	GtkWidget *pButton1;
+	GtkWidget *pButton2;
 	GtkWidget *pLabel;
 	GtkWidget *pImage;
 
@@ -81,15 +83,19 @@ int main(int argc, char **argv)
     	gtk_box_pack_start(GTK_BOX(pVBox), pImage, TRUE, TRUE, 0);
 	
 	/* Creation du bouton avec un label pour se connecter */
-    	pButton = gtk_button_new_with_label("Connexion");
-    	gtk_box_pack_start(GTK_BOX(pVBox), pButton, FALSE, FALSE, 0);
-	
-    	/* Connexion du signal "clicked" du GtkButton */
-    	g_signal_connect(G_OBJECT(pButton), "clicked", G_CALLBACK(on_clicked_button_connection), (GtkWidget*) pVBoxFrame);
+    	pButton1 = gtk_button_new_with_label("Connexion");
+    	gtk_box_pack_start(GTK_BOX(pVBox), pButton1, FALSE, FALSE, 0);
+			
+			/* Connexion du signal "clicked" du GtkButton */
+		g_signal_connect(G_OBJECT(pButton1), "clicked", G_CALLBACK(on_clicked_button_connection), (GtkWidget*) pVBoxFrame);
 
 	/* Creation du bouton avec un label pour se deconnecter */
-	pButton = gtk_button_new_with_label("Déconnexion");
-    	gtk_box_pack_start(GTK_BOX(pVBox), pButton, FALSE, FALSE, 0);
+	pButton2 = gtk_button_new_with_label("Déconnexion");
+    	gtk_box_pack_start(GTK_BOX(pVBox), pButton2, FALSE, FALSE, 0);
+    	
+    	/* Connexion du signal "clicked" du GtkButton */
+		g_signal_connect(G_OBJECT(pButton2), "clicked", G_CALLBACK(on_clicked_button_deco), (GtkWidget*) pVBoxFrame);
+    
 
 	/* Connexion du signal "clicked" du GtkButton */
     	/*g_signal_connect(G_OBJECT(pButton), "clicked", G_CALLBACK(on_clicked_button_disconnection), (GtkWidget*) pWindow);*/
@@ -99,8 +105,16 @@ int main(int argc, char **argv)
 	
 	/* Demarrage de la boucle evenementielle */
     	gtk_main();
-		printf("mouau\n");
+
     	return EXIT_SUCCESS;
+}
+
+void on_clicked_button_deco(GtkWidget *pButton, gpointer data)
+{
+	closeSon(CAPTURE);
+	pthread_cancel(threads[CAPTURE]);
+	closeSon(PLAYBACK);
+	pthread_cancel(threads[PLAYBACK]);
 }
 
 void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
@@ -131,8 +145,6 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 	/* Recuperation du texte contenu dans le 2e GtkEntry */
     	port = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
 
-	printf("coucou\n");
-
 	/*Appel de la fonction principale */
     	launch(adress, port, threads);
 
@@ -147,8 +159,4 @@ void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data)
 	
 	/* Affichage de la fenetre et de tout ce qu'elle contient */
     	/*gtk_widget_show_all(GTK_WIDGET((GtkWidget*)data));*/
-    pthread_cancel(threads[CAPTURE]);
-	closeSon(CAPTURE);
-	pthread_cancel(threads[PLAYBACK]);
-	closeSon(PLAYBACK);
 }

@@ -33,7 +33,7 @@ int rcv_serveur(int sock, struct sockaddr_in * client, s_MUV* packetR)
 	//char strR[(packetR->size+sizeof(long))];
 	
 	//if ((nbR = recvfrom(sock, strR, packetR->size+sizeof(long), 0, (struct sockaddr *) client, (socklen_t*)&sockSize )) <= 0)
-	if ((nbR = recvfrom(sock, packetR, sizeof(s_MUV), 0, (struct sockaddr *) client, (socklen_t*)&sockSize )) <= 0)
+	if ((nbR = recvfrom(sock, packetR, sizeof(s_MUV), MSG_DONTWAIT, (struct sockaddr *) client, (socklen_t*)&sockSize )) <= 0)
 		return EXIT_FAILURE;
 	else 
 		printf("berf2\n");

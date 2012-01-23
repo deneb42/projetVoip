@@ -91,6 +91,8 @@ void capture(char* str)
 		fprintf(stderr, "error from read: %s\n", snd_strerror(rc));
 	else if (rc != (int)frames)
 		fprintf(stderr, "short read, read %d frames\n", rc);
+	else
+		printf("Read %d frames \n", frames);
 }
 
 void playback(char* str)
