@@ -36,6 +36,7 @@ int launch (char* paradd, pthread_t* threads)
 	//if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
 	//	exit(EXIT_FAILURE);
 	address = paradd;
+	port = parport;
 	
 	param.sock = sock_udp();
 	

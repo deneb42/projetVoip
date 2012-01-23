@@ -45,5 +45,5 @@ void * boucle_capture(void *arg)
 			fprintf(stderr, "[E] Sending error\n");
 	}
 	
-	return EXIT_SUCCESS;
+	return NULL;
 }

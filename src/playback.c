@@ -55,5 +55,7 @@ void* boucle_playback(void* arg)
 		else
 			fprintf(stderr, "[E] Receiving error\n");
 	}
+	
+	return NULL;
 }
 
