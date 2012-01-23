@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     	pVBox = gtk_vbox_new(TRUE, 0);
 
 	/* Chargement d'une image a partir d'un fichier */
-    	pImage = gtk_image_new_from_file("./voip.png");
+    	pImage = gtk_image_new_from_file("../img/voip.png");
     	gtk_box_pack_start(GTK_BOX(pVBox), pImage, FALSE, FALSE, 0);
 
     	/* Ajout de la GtkVBox dans la fenetre */
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     	pSeparator = gtk_hseparator_new();
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pSeparator, TRUE, FALSE, 0);
 
-	pImage = gtk_image_new_from_file("./phone.gif");
+	pImage = gtk_image_new_from_file("../img/phone.gif");
     	gtk_box_pack_start(GTK_BOX(pVBox), pImage, TRUE, TRUE, 0);
 	
 	/* Creation du bouton avec un label pour se connecter */
