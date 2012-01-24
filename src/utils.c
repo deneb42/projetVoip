@@ -63,13 +63,3 @@ int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param
 	#endif
 	return EXIT_SUCCESS;
 }
-
-// DEPRECATED ?
-int getIndex(char* str)
-{
-	int id;
-	memcpy(str, &id, sizeof(long));
-	
-	return id;
-}
-

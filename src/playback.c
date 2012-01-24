@@ -32,7 +32,7 @@ void* boucle_playback(void* arg)
 			rc = receiveMUV(param.sock, &(param.client), packetR + (index%TAILLE_LISTE) );
 		#endif
 		#ifdef CLIENT
-			rc = receiveMUV(param.sock, &(param.serveur), packetR + (index%TAILLE_LISTE) );
+			rc = receiveMUV(param.sock, NULL, packetR + (index%TAILLE_LISTE) );
 		#endif
 		
 		if(rc!=EXIT_FAILURE)

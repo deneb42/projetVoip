@@ -31,6 +31,10 @@ void * boucle_capture(void *arg)
 	packetS.id=0;
 
 	while(1) // boucle principale
+	while(1) // boucle principale
+	while(1) // boucle principale
+	while(1) // boucle principale
+	while(1) // boucle principale
 	{	
 		capture(packetS.data);
 		
@@ -51,12 +55,13 @@ int sendMUV(int sock, struct sockaddr_in * destination, s_MUV* packetS)
 {
 	int nbS;
 
-	if((nbS = sendto(sock, packetS, sizeof(s_MUV), 0, (struct sockaddr *) &destination, sizeof(struct sockaddr_in) )) > 0)
+	if((nbS = sendto(sock, packetS, sizeof(s_MUV), 0, (struct sockaddr *) destination, sizeof(struct sockaddr_in) )) > 0)
 	{
 		printf("[I] Packet %lu (%d bytes) : sent\n", packetS->id, nbS);
 		return EXIT_SUCCESS;
 	}
 		
-	fprintf(stderr, "[E] Sending error\n");
+	fprintf(stderr, "[E] Packet %lu : error, %d bytes sent\n", packetS->id, nbS);
+	perror("fuck");
 	return EXIT_FAILURE;
 }

@@ -33,7 +33,7 @@
 	void* strtoMUV(s_MUV * packet, char* str);
 	*/
 	
-	int getIndex(char* str);
+	//int getIndex(char* str);
 	
 	int launch (char* paradd, char* port, pthread_t* threads, s_par_thread* param);
 
