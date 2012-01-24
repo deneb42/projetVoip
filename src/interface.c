@@ -61,7 +61,12 @@ int main(int argc, char **argv)
     	gtk_container_add(GTK_CONTAINER(pWindow), pVBox);
 
     	/* Creation du premier GtkFrame */
-    	pFrame = gtk_frame_new("Serveur");
+	#ifdef CLIENT
+	pFrame = gtk_frame_new("Client");
+	#endif
+	#ifdef SERVEUR
+	pFrame = gtk_frame_new("Serveur");	
+    	#endif
     	gtk_box_pack_start(GTK_BOX(pVBox), pFrame, TRUE, TRUE, 0);
 
     	/* Creation et insertion d une boite pour le premier GtkFrame */
@@ -88,8 +93,10 @@ int main(int argc, char **argv)
     	pSeparator = gtk_hseparator_new();
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pSeparator, TRUE, FALSE, 0);
 
-	pImage = gtk_image_new_from_file("../img/phone.gif");
-    	gtk_box_pack_start(GTK_BOX(pVBox), pImage, TRUE, TRUE, 0);
+	/*pImage = gtk_image_new_from_file("../img/phone.gif");
+    	gtk_box_pack_start(GTK_BOX(pVBox), pImage, TRUE, TRUE, 0);*/
+
+	
 	
 	/* Creation du bouton avec un label pour se connecter */
     	pButton1 = gtk_button_new_with_label("Connexion");
@@ -193,7 +200,5 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 	}
 }
 
-/*void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data)
-{	
-}*/
+
 
