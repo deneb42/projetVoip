@@ -103,8 +103,8 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 	const gchar *adress;
 	const gchar *port;
 	
-	port="2525";
-	adress="localhost"
+	/*port="25555";
+	adress="localhost"*/
 	
     	/* Recuperation de la liste des elements que contient la GtkVBox */
     	pList = gtk_container_get_children(GTK_CONTAINER((GtkWidget*)data));
@@ -113,6 +113,9 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
     	/* Passage a l element suivant : le GtkEntry */
     	pList = g_list_next(pList);
     	pTempEntry = GTK_WIDGET(pList->data);
+	
+	/* Mets le texte contenu dans le 1er GtkEntry à "localhost" */
+	gtk_entry_set_text(GTK_ENTRY(pTempEntry),"localhost");
 
     	/* Recuperation du texte contenu dans le 1er GtkEntry */
     	adress = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
@@ -123,6 +126,9 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 	/* Passage a l element suivant : le GtkEntry */
     	pList = g_list_next(pList);
 	pTempEntry = GTK_WIDGET(pList->data);
+	
+	/* Mets le texte contenu dans le 2e GtkEntry à "25555" */
+	gtk_entry_set_text(GTK_ENTRY(pTempEntry),"25555");
 
 	/* Recuperation du texte contenu dans le 2e GtkEntry */
     	port = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
