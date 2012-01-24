@@ -20,42 +20,43 @@ void* boucle_playback(void* arg)
 	int rc=EXIT_SUCCESS, index=0;
 	s_MUV packetR[TAILLE_LISTE];
 	
-	
 	if(initSon(PLAYBACK, &(param.val), &(param.frames)) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
 	
 	for(int i=0;i<TAILLE_LISTE;i++)
-	{
 		packetR[i].id=0;
-		//packetR[i].size = param.frames * 4; /* 2 bytes/sample, 2 channels */
-		//packetR[i].data = malloc(packetR[i].size);
-	}
-	
-	//pthread_cleanup_push(clean_playback, packetR);
 	
 	while (1) // boucle principale
 	{	
        
 		#ifdef SERVEUR
-			rc = rcv_serveur(param.sock, &(param.client), packetR + (index%TAILLE_LISTE) );
+			rc = receive(param.sock, &(param.client), packetR + (index%TAILLE_LISTE) );
 		#endif
 		#ifdef CLIENT
-			rc = rcv_client(param.sock, packetR + (index%TAILLE_LISTE) );
+			rc = receive(param.sock, &(param.serveur), packetR + (index%TAILLE_LISTE) );
 		#endif
 		
 		if(rc!=EXIT_FAILURE)
 		{
-			//#ifdef CLIENT // DEBUG
 			playback(packetR[index%TAILLE_LISTE].data);
-			//playback(packetR->data);
-			//#endif
-			//memset(packetR[index%TAILLE_LISTE].data, 0, packetR[index%TAILLE_LISTE].size);
 			index++;
 		}
-		else
-			fprintf(stderr, "[E] Receiving error\n");
 	}
 	
 	return NULL;
 }
 
+int receive(int sock, struct sockaddr_in * source, s_MUV* packetR)
+{
+	int sockSize = sizeof(struct sockaddr_in);
+	int nbR;
+
+	if ((nbR = recvfrom(sock, packetR, sizeof(s_MUV), MSG_DONTWAIT, (struct sockaddr *) source, (socklen_t*)&sockSize )) > 0)
+	{
+		printf("[I] Packet %lu (%d bytes) : received\n", packetS->id, nbS);
+		return EXIT_SUCCESS;
+	}
+		
+	fprintf(stderr, "[E] Sending error\n");
+	return EXIT_FAILURE;
+}

@@ -28,9 +28,10 @@
 	} s_par_thread;
 
 	
-	void* MUVtoStr(s_MUV * packet, char* str);
+	/*void* MUVtoStr(s_MUV * packet, char* str);
 
 	void* strtoMUV(s_MUV * packet, char* str);
+	*/
 	
 	int getIndex(char* str);
 	

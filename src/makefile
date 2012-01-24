@@ -1,7 +1,7 @@
 #|  projetVoip makefile             |
 #|                                  |
 #|  by :deneb                       |
-#|  last modif : 17/01/12           |
+#|  last modif : 24/01/12           |
 #/__________________________________/
 
 
@@ -18,8 +18,8 @@ OBJS =
 # Path where the bin will be
 PGM_PATH = ./
 #names of the execs
-CLIENT = main.o client.o utils.o socket_utils.o son.o interface.o capture.o playback.o
-SERVEUR = main.o serveur.o utils.o socket_utils.o son.o interface.o capture.o playback.o
+CLIENT = utils.o socket_utils.o son.o interface.o capture.o playback.o
+SERVEUR = utils.o socket_utils.o son.o interface.o capture.o playback.o
 
 # For the generic utilisation, 
 # DO NOT TOUCH ANYTHING UNDER THIS LINE !!!

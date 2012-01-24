@@ -192,8 +192,3 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 		status = 1;
 	}
 }
-
-/*void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data)
-{	
-}*/
-

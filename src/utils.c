@@ -1,31 +1,71 @@
-/* utils.c						By : deneb					last modif : 09/12/11	   \
+/* projetVoip					By : deneb					last modif : 09/12/11	   \
 \_____________________________________________________________________________________*/
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include <arpa/inet.h>
+#include <alsa/asoundlib.h>
+#include <signal.h>
+#include <pthread.h>
 
 #include "utils.h"
+#include "socket_utils.h"
+#include "client_serveur.h"
+#include "son.h"
+#include "capture.h"
+#include "playback.h"
 
-/* DEPRECATED 
- * 
-void * MUVtoStr(s_MUV * packet, char* str)
+//problème : l'adresse du client n'est pas gardé entre récéption et envoi
+
+// on doit perdre le socket quelque part, erreur a l'envoi><<<<<<>>>
+
+// selection de l'adresse a amméliorer
+
+// voir a utiliser directement une string d'ou on pourrait getID, get...
+
+
+int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
 {
-	memcpy(str, &(packet->id), sizeof(long));
-	memcpy(str+sizeof(long), packet->data, packet->size);
+	char *address, *port;
 	
-	return str;
+	// param contient les variables nécéssaires dans les threads pour le son et les socket
+	
+	// pour le son
+	param->val = 11025;
+	param->frames = SIZE_PACKET / 4; // 2 bytes par channel, 2 channels
+	
+	//if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
+	//	exit(EXIT_FAILURE);
+	address = paradd;
+	port = parport;
+	
+	param->sock = sock_udp();
+	
+	#ifdef CLIENT
+		set_udp_address(&(param->serveur), port, address);
+	#endif
+	#ifdef SERVEUR
+		set_udp_address(&(param->serveur), port, NULL);
+		if (bind(param->sock, (struct sockaddr *) &(param->serveur), sizeof(struct sockaddr_in)) < 0) 
+		{
+			perror("bind");
+			exit(EXIT_FAILURE);
+		}
+	#endif
+	
+	printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->serveur.sin_addr), ntohs(param->serveur.sin_port));
+	// Fin sockets
+	
+	#ifdef CLIENT
+	pthread_create(threads + CAPTURE, 0, boucle_capture, param);
+	#endif
+	#ifdef SERVEUR
+	pthread_create(threads + PLAYBACK, 0, boucle_playback, param);
+	#endif
+	return EXIT_SUCCESS;
 }
 
-void * strtoMUV(s_MUV * packet, char* str)
-{
-	memcpy(&(packet->id), str, sizeof(long));
-	memcpy(packet->data, str+sizeof(long), packet->size);
-	
-	return packet;
-}*/
-
+// DEPRECATED ?
 int getIndex(char* str)
 {
 	int id;
@@ -34,40 +74,3 @@ int getIndex(char* str)
 	return id;
 }
 
-/*int lecture_arguments (int argc, char * argv [], char** address, char** port) // DEPRECATED
-{ /* reads the arguments and put them in the appropriate strings. if not given, initialize to default values *
-
-	char * liste_options = "a:p:d:h";
-	int option;
-	char* ad = "localhost";
-	char* po = "2000";
-	
-	if(address == NULL || port==NULL)
-	{
-		fprintf(stderr, "lecture_arguments : address, dest and port must not be NULL");
-		return EXIT_FAILURE;
-	}
-	
-	*address = ad;
-	*port = po;
-
-	while ((option = getopt(argc, argv, liste_options)) != -1) 
-	{
-		switch (option) 
-		{
-			case 'a' :
-				*address = optarg;
-				break;
-			case 'p' :
-				*port = optarg;
-				break;
-			case 'h' :
-				fprintf(stderr, "Syntaxe : %s [-a adresse] [-p port] \n", argv[0]);
-				return EXIT_FAILURE;
-			default :
-				break;
-		}
-	}
-
-	return EXIT_SUCCESS;
-} */

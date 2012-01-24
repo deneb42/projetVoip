@@ -23,7 +23,7 @@ int snd_serveur(int sock, struct sockaddr_in * client, s_MUV* packetS)
 		printf("berf1\n");
 
 	return EXIT_SUCCESS;
-} */
+} *
 
 int rcv_serveur(int sock, struct sockaddr_in * client, s_MUV* packetR)
 {
@@ -43,3 +43,4 @@ int rcv_serveur(int sock, struct sockaddr_in * client, s_MUV* packetR)
 	
 	return EXIT_SUCCESS;
 }
+*/
