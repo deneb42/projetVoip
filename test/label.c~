@@ -1,0 +1,49 @@
+#include <stdlib.h>
+#include <gtk/gtk.h>
+
+int main(int argc,char **argv)
+{
+	/* Declaration des widgets */
+	GtkWidget* pWindow;
+	GtkWidget* pLabel;
+	gchar* sUtf8;
+
+	gtk_init(&argc,&argv);
+	
+	/* Creation de la fenetre */
+	pWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	/* Definition de la position */
+ 	gtk_window_set_position(GTK_WINDOW(pWindow), GTK_WIN_POS_CENTER);
+	/* Titre de la fenetre */
+	gtk_window_set_title(GTK_WINDOW(pWindow), "VoIP");
+	/* Definition de la taille de la fenetre */
+	gtk_window_set_default_size(GTK_WINDOW(pWindow), 640, 400);
+
+	/* Creation du label avec g_locale_to_utf8 */
+    	pLabel=gtk_label_new(NULL);
+
+    	/* On utilise les balises */
+   	sUtf8 = g_locale_to_utf8("<span face=\"Courier New\"><b>Courier New 10 Gras</b></span>\n"
+        "<span font_desc=\"Times New Roman 12\" foreground=\"#0000FF\"><i>Times New Roman 12 Italique</i></span>\n",
+        -1, NULL, NULL, NULL);
+    	gtk_label_set_markup(GTK_LABEL(pLabel), sUtf8);
+    	g_free(sUtf8);
+	
+    	/* On centre le texte */
+    	gtk_label_set_justify(GTK_LABEL(pLabel), GTK_JUSTIFY_CENTER);
+
+	/* On ajoute le label a l'interieur de la fenetre */
+	gtk_container_add(GTK_CONTAINER(pWindow), pLabel);
+
+	/* Affichage de la fenetre et de tout ce qu'il contient */
+	gtk_widget_show_all(pWindow);
+
+	/* Connexion du signal "destroy" de la fenetre */
+	/* On appelle directement la fonction de sortie de boucle */
+	g_signal_connect(G_OBJECT(pWindow), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	
+	/* Demarrage de la boucle evenementielle */
+	gtk_main();
+
+	return EXIT_SUCCESS;
+}
