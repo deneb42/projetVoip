@@ -72,11 +72,15 @@ int main(int argc, char **argv)
     	pLabel = gtk_label_new("Adresse :");
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, TRUE, 0);
     	pEntry = gtk_entry_new();
+	/* Mets le texte contenu dans le 1er GtkEntry à "localhost" */
+	gtk_entry_set_text(GTK_ENTRY(pEntry),"localhost");
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry, TRUE, FALSE, 0);
     	gtk_entry_set_text(GTK_ENTRY(pEntry), "localhost");
     	pLabel = gtk_label_new("N° de port :");
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, FALSE, 0);
     	pEntry = gtk_entry_new();
+	/* Mets le texte contenu dans le 2e GtkEntry à "25555" */
+	gtk_entry_set_text(GTK_ENTRY(pEntry),"25555");
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry, TRUE, FALSE, 0);
     	gtk_entry_set_text(GTK_ENTRY(pEntry), "25555");
 
@@ -156,6 +160,7 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 	
 	if(status == 0)
 	{
+
     	/* Recuperation de la liste des elements que contient la GtkVBox */
     	pList = gtk_container_get_children(GTK_CONTAINER((GtkWidget*)data));
 
@@ -163,6 +168,8 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
     	/* Passage a l element suivant : le GtkEntry */
     	pList = g_list_next(pList);
     	pTempEntry = GTK_WIDGET(pList->data);
+	
+	
 
     	/* Recuperation du texte contenu dans le 1er GtkEntry */
     	adress = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
@@ -186,11 +193,7 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 	}
 }
 
-void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data)
+/*void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data)
 {	
-	/*Chargement des parametres d arriere plan */
-	/*gtk_rc_parse("./window.rc");*/
-	
-	/* Affichage de la fenetre et de tout ce qu'elle contient */
-    	/*gtk_widget_show_all(GTK_WIDGET((GtkWidget*)data));*/
-}
+}*/
+
