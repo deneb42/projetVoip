@@ -8,7 +8,6 @@
 #include <pthread.h>
 
 #include "utils.h"
-#include "client_serveur.h"
 #include "son.h"
 #include "capture.h"
 
@@ -16,6 +15,7 @@ void * boucle_capture(void *arg)
 {
 	s_par_thread param, tmp = *((s_par_thread*)arg);
 	s_MUV packetS;
+	int rc;
 	
 	param.serveur = tmp.serveur;
 	param.client = tmp.client;
@@ -35,24 +35,25 @@ void * boucle_capture(void *arg)
 		capture(packetS.data);
 		
 		#ifdef SERVEUR
-			send(param.sock, &(param.client), &packetS);
+			rc = sendMUV(param.sock, &(param.client), &packetS);
 		#endif
 		#ifdef CLIENT
-			send(param.sock, &(param.serveur), &packetS);
+			rc = sendMUV(param.sock, &(param.serveur), &packetS);
         #endif
+        if(rc != EXIT_FAILURE)
+			packetS.id++;
 	}
 	
 	return NULL;
 }
 
-int send(int sock, struct sockaddr_in * destination, s_MUV* packetS)
+int sendMUV(int sock, struct sockaddr_in * destination, s_MUV* packetS)
 {
 	int nbS;
 
 	if((nbS = sendto(sock, packetS, sizeof(s_MUV), 0, (struct sockaddr *) &destination, sizeof(struct sockaddr_in) )) > 0)
 	{
 		printf("[I] Packet %lu (%d bytes) : sent\n", packetS->id, nbS);
-		packetS.id++;
 		return EXIT_SUCCESS;
 	}
 		

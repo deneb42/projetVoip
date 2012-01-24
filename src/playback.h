@@ -6,6 +6,6 @@
 
 	int init_playback();
 	void* boucle_playback(void* arg);
-	int receive(int sock, struct sockaddr_in * source, s_MUV* packetR);
+	int receiveMUV(int sock, struct sockaddr_in * source, s_MUV* packetR);
 	
 #endif

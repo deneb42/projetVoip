@@ -10,7 +10,6 @@
 
 #include "utils.h"
 #include "socket_utils.h"
-#include "client_serveur.h"
 #include "son.h"
 #include "capture.h"
 #include "playback.h"

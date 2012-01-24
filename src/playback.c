@@ -8,7 +8,6 @@
 #include <pthread.h>
 
 #include "utils.h"
-#include "client_serveur.h"
 #include "son.h"
 #include "playback.h"
 
@@ -30,10 +29,10 @@ void* boucle_playback(void* arg)
 	{	
        
 		#ifdef SERVEUR
-			rc = receive(param.sock, &(param.client), packetR + (index%TAILLE_LISTE) );
+			rc = receiveMUV(param.sock, &(param.client), packetR + (index%TAILLE_LISTE) );
 		#endif
 		#ifdef CLIENT
-			rc = receive(param.sock, &(param.serveur), packetR + (index%TAILLE_LISTE) );
+			rc = receiveMUV(param.sock, &(param.serveur), packetR + (index%TAILLE_LISTE) );
 		#endif
 		
 		if(rc!=EXIT_FAILURE)
@@ -46,14 +45,14 @@ void* boucle_playback(void* arg)
 	return NULL;
 }
 
-int receive(int sock, struct sockaddr_in * source, s_MUV* packetR)
+int receiveMUV(int sock, struct sockaddr_in * source, s_MUV* packetR)
 {
 	int sockSize = sizeof(struct sockaddr_in);
 	int nbR;
 
 	if ((nbR = recvfrom(sock, packetR, sizeof(s_MUV), MSG_DONTWAIT, (struct sockaddr *) source, (socklen_t*)&sockSize )) > 0)
 	{
-		printf("[I] Packet %lu (%d bytes) : received\n", packetS->id, nbS);
+		printf("[I] Packet %lu (%d bytes) : received\n", packetR->id, nbR);
 		return EXIT_SUCCESS;
 	}
 		
