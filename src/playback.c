@@ -45,10 +45,10 @@ void* boucle_playback(void* arg)
 		
 		if(rc!=EXIT_FAILURE)
 		{
-			#ifdef CLIENT // DEBUG
+			//#ifdef CLIENT // DEBUG
 			playback(packetR[index%TAILLE_LISTE].data);
 			//playback(packetR->data);
-			#endif
+			//#endif
 			//memset(packetR[index%TAILLE_LISTE].data, 0, packetR[index%TAILLE_LISTE].size);
 			index++;
 		}

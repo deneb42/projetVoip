@@ -81,9 +81,9 @@ void closeSon(int mode)
 void capture(char* str)
 {
 	int rc;
-	printf("wait\n");
+	//printf("wait\n");
 	rc = snd_pcm_readi(handle[CAPTURE], str, frames);
-	printf("done \n");
+	//printf("done \n");
 	if (rc == -EPIPE) // EPIPE means overrun
 	{
 		fprintf(stderr, "overrun occurred\n");

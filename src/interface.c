@@ -8,6 +8,7 @@
 
 pthread_t threads[2];
 int status;
+s_par_thread param;
 
 void on_clicked_button_connection(GtkWidget *pButton, gpointer data);
 void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data);
@@ -157,7 +158,7 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
     	port = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
 
 	/*Appel de la fonction principale */
-    	launch(adress, port, threads);
+    	launch(adress, port, threads, &param);
 
 	/* Liberation de la memoire utilisee par la liste */
     	g_list_free(pList);
