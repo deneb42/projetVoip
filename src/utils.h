@@ -36,7 +36,7 @@
 	
 	int launch (char* paradd, char* port, pthread_t* threads, s_par_thread* param);
 
-	int lecture_arguments (int argc, char * argv [], char** address, char** port);
+	//int lecture_arguments (int argc, char * argv [], char** address, char** port); // DEPRECATED
 		/* reads the arguments and put them in the appropriate strings. if not given, initialize to default values */
 	
 #endif
