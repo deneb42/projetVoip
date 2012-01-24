@@ -22,7 +22,7 @@ void * boucle_capture(void *arg)
 	param.sock = tmp.sock;
 	
 	param.val = tmp.val;
-	param.frames = tmp.frames;
+	param.frames = tmp.frames; // nécéssaire ? je ne pense pas 
 
 	
 	if(initSon(CAPTURE, &(param.val), &(param.frames)) == EXIT_FAILURE)

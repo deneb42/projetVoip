@@ -27,18 +27,17 @@ void* boucle_playback(void* arg)
 	
 	while (1) // boucle principale
 	{	
-       
 		#ifdef SERVEUR
-			rc = receiveMUV(param.sock, &(param.client), packetR + (index%TAILLE_LISTE) );
+			rc = receiveMUV(param.sock, &(param.client), packetR + index);
 		#endif
 		#ifdef CLIENT
-			rc = receiveMUV(param.sock, NULL, packetR + (index%TAILLE_LISTE) );
+			rc = receiveMUV(param.sock, NULL, packetR + index);
 		#endif
 		
 		if(rc!=EXIT_FAILURE)
 		{
-			playback(packetR[index%TAILLE_LISTE].data);
-			index++;
+			playback(packetR[index].data);
+			index = (index+1)%TAILLE_LISTE;
 		}
 	}
 	

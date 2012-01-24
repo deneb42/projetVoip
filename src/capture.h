@@ -7,7 +7,9 @@
 	#include <arpa/inet.h>
 
 	int init_capture();
+	
 	void* boucle_capture(void* arg);
+	
 	int sendMUV(int sock, struct sockaddr_in * destination, s_MUV* packetS);
 	
 #endif

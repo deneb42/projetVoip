@@ -16,12 +16,7 @@
 
 //problème : l'adresse du client n'est pas gardé entre récéption et envoi
 
-// on doit perdre le socket quelque part, erreur a l'envoi><<<<<<>>>
-
 // selection de l'adresse a amméliorer
-
-// voir a utiliser directement une string d'ou on pourrait getID, get...
-
 
 int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
 {
@@ -33,10 +28,8 @@ int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param
 	param->val = 11025;
 	param->frames = SIZE_PACKET / 4; // 2 bytes par channel, 2 channels
 	
-	//if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
-	//	exit(EXIT_FAILURE);
 	address = paradd;
-	port = parport;
+	port = parport; // need verification de la véracité des paramètres
 	
 	param->sock = sock_udp();
 	
