@@ -21,10 +21,11 @@ int cree_socket_stream (const char * nom_hote, const char * nom_service, const c
 	struct hostent * hostent;
 	struct servent * servent;
 	struct protoent * protoent;
+	
 	if ((hostent = gethostbyname(nom_hote)) == NULL) {
 		perror("gethostbyname");
 		return -1;
-	}
+	}printf("lol2\n");
 	if ((protoent = getprotobyname(nom_proto)) == NULL) {
 		perror("getprotobyname");
 		return -1;
@@ -36,7 +37,7 @@ int cree_socket_stream (const char * nom_hote, const char * nom_service, const c
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("socket");
 		return -1;
-	}
+	}printf("lol\n");
 	memset(& adresse, 0, sizeof (struct sockaddr_in));
 	adresse.sin_family = AF_INET;
 	adresse.sin_port = servent->s_port;
@@ -48,6 +49,7 @@ int cree_socket_stream (const char * nom_hote, const char * nom_service, const c
 		perror("bind");
 		return -1;
 	}
+	
 	return sock;
 }
 
@@ -56,7 +58,7 @@ int affiche_adresse_socket (int sock)
 	struct sockaddr_in adresse;
 	socklen_t longueur ;
 	longueur = sizeof(struct sockaddr_in);
-	if (getsockname(sock, & adresse, & longueur) < 0) {
+	if (getsockname(sock, (struct sockaddr *)& adresse, & longueur) < 0) {
 		perror("getsockname");
 		return -1;
 	}

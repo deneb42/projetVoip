@@ -1,4 +1,4 @@
-/* son.c						By : deneb					last modif : 09/12/11	   \
+/* son.c						By : deneb					last modif : 24/12/11	   \
 \_____________________________________________________________________________________*/
 
 #include <stdio.h>
@@ -26,13 +26,13 @@ int initSon(int mode, unsigned int *val, snd_pcm_uframes_t *f)
 		rc = snd_pcm_open(handle+PLAYBACK, "default", SND_PCM_STREAM_PLAYBACK, 0);
 	else
 	{
-		fprintf(stderr, "%d : mode d'ouverture du canal incorrect", mode);
+		fprintf(stderr, "[E] %d : mode d'ouverture du canal incorrect", mode);
 		return EXIT_FAILURE;
 	}
 	
 	if (rc < 0) 
 	{
-		fprintf(stderr, "unable to open pcm device: %s\n", snd_strerror(rc));
+		fprintf(stderr, "[E] unable to open pcm device: %s\n", snd_strerror(rc));
 		return EXIT_FAILURE;
 	}
 	
@@ -54,7 +54,7 @@ int initSon(int mode, unsigned int *val, snd_pcm_uframes_t *f)
 	rc = snd_pcm_hw_params(*(handle+mode), params); /* Write the parameters to the driver */
 	if (rc < 0) 
 	{
-		fprintf(stderr, "unable to set hw parameters: %s\n", snd_strerror(rc));
+		fprintf(stderr, "[E] unable to set hw parameters: %s\n", snd_strerror(rc));
 		return EXIT_FAILURE;
 	}
   
@@ -81,20 +81,18 @@ void closeSon(int mode)
 void capture(char* str)
 {
 	int rc;
-	//printf("wait\n");
+
 	rc = snd_pcm_readi(handle[CAPTURE], str, frames);
-	//printf("done \n");
+
 	if (rc == -EPIPE) // EPIPE means overrun
 	{
-		fprintf(stderr, "overrun occurred\n");
+		fprintf(stderr, "[D] overrun occurred\n");
 		snd_pcm_prepare(handle[CAPTURE]);
 	}
 	else if (rc < 0)
-		fprintf(stderr, "error from read: %s\n", snd_strerror(rc));
+		fprintf(stderr, "[E] error from read: %s\n", snd_strerror(rc));
 	else if (rc != (int)frames)
-		fprintf(stderr, "short read, read %d frames\n", rc);
-	else
-		printf("Read %d frames \n", frames);
+		fprintf(stderr, "[D] short read, read %d frames\n", rc);
 }
 
 void playback(char* str)
@@ -105,11 +103,11 @@ void playback(char* str)
 			
 	if (rc == -EPIPE) // EPIPE means underrun
 	{
-		fprintf(stderr, "underrun occurred\n");
+		fprintf(stderr, "[D] underrun occurred\n");
 		snd_pcm_prepare(handle[PLAYBACK]);
 	} 
 	else if (rc < 0) 
-		fprintf(stderr, "error from writei: %s\n", snd_strerror(rc));
+		fprintf(stderr, "[E] error from writei: %s\n", snd_strerror(rc));
 	else if (rc != (int)frames) 
-		fprintf(stderr, "short write, write %d frames\n", rc);
+		fprintf(stderr, "[D] short write, write %d frames\n", rc);
 }

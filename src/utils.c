@@ -8,7 +8,8 @@
 
 #include "utils.h"
 
-/*
+/* DEPRECATED 
+ * 
 void * MUVtoStr(s_MUV * packet, char* str)
 {
 	memcpy(str, &(packet->id), sizeof(long));
@@ -33,16 +34,15 @@ int getIndex(char* str)
 	return id;
 }
 
-int lecture_arguments (int argc, char * argv [], char** address, char** port)
-{ /* reads the arguments and put them in the appropriate strings. if not given, initialize to default values */
+/*int lecture_arguments (int argc, char * argv [], char** address, char** port) // DEPRECATED
+{ /* reads the arguments and put them in the appropriate strings. if not given, initialize to default values *
 
 	char * liste_options = "a:p:d:h";
 	int option;
 	char* ad = "localhost";
 	char* po = "2000";
-	//char* de = "localhost";
 	
-	if(address == NULL || port==NULL)// || dest==NULL)
+	if(address == NULL || port==NULL)
 	{
 		fprintf(stderr, "lecture_arguments : address, dest and port must not be NULL");
 		return EXIT_FAILURE;
@@ -50,7 +50,6 @@ int lecture_arguments (int argc, char * argv [], char** address, char** port)
 	
 	*address = ad;
 	*port = po;
-	//*dest = de;
 
 	while ((option = getopt(argc, argv, liste_options)) != -1) 
 	{
@@ -62,9 +61,6 @@ int lecture_arguments (int argc, char * argv [], char** address, char** port)
 			case 'p' :
 				*port = optarg;
 				break;
-			/*case 'd' :
-				*dest = optarg;
-				break;*/
 			case 'h' :
 				fprintf(stderr, "Syntaxe : %s [-a adresse] [-p port] \n", argv[0]);
 				return EXIT_FAILURE;
@@ -74,5 +70,4 @@ int lecture_arguments (int argc, char * argv [], char** address, char** port)
 	}
 
 	return EXIT_SUCCESS;
-}
-
+} */
