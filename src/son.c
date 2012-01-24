@@ -65,19 +65,25 @@ int initSon(int mode, unsigned int *val, snd_pcm_uframes_t *f)
 	return EXIT_SUCCESS;
 }
 
-void closeSon()
+void closeSon(int mode)
 {
-	snd_pcm_drain(handle[CAPTURE]);
-	snd_pcm_close(handle[CAPTURE]);
-	snd_pcm_drain(handle[PLAYBACK]);
-	snd_pcm_close(handle[PLAYBACK]);
+	printf("[I] Desallocation du handle de ");
+	if(mode==CAPTURE)
+		printf("capture\n");
+	else
+		printf("lecture\n");
+		
+	snd_pcm_drain(handle[mode]);
+	snd_pcm_close(handle[mode]);
+	printf("[I] OK\n");
 }
 
 void capture(char* str)
 {
 	int rc;
-	
+	printf("wait\n");
 	rc = snd_pcm_readi(handle[CAPTURE], str, frames);
+	printf("done \n");
 	if (rc == -EPIPE) // EPIPE means overrun
 	{
 		fprintf(stderr, "overrun occurred\n");
@@ -87,6 +93,8 @@ void capture(char* str)
 		fprintf(stderr, "error from read: %s\n", snd_strerror(rc));
 	else if (rc != (int)frames)
 		fprintf(stderr, "short read, read %d frames\n", rc);
+	else
+		printf("Read %d frames \n", frames);
 }
 
 void playback(char* str)
