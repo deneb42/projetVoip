@@ -13,6 +13,7 @@ s_par_thread param;
 void on_clicked_button_connection(GtkWidget *pButton, gpointer data);
 void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data);
 void on_clicked_button_deco(GtkWidget *pButton, gpointer data);
+void quit_callback(GtkWidget *pButton, gpointer data);
 
 int main(int argc, char **argv)
 {
@@ -47,7 +48,7 @@ int main(int argc, char **argv)
 	
 	/* Connexion du signal "destroy" de la fenetre */
 	/* On appelle directement la fonction de sortie de boucle */
-    	g_signal_connect(G_OBJECT(pWindow), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    	g_signal_connect(G_OBJECT(pWindow), "destroy", G_CALLBACK(quit_callback), NULL);
 
     	/* Creation de la GtkBox verticale */
     	pVBox = gtk_vbox_new(TRUE, 0);
@@ -72,10 +73,12 @@ int main(int argc, char **argv)
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, TRUE, 0);
     	pEntry = gtk_entry_new();
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry, TRUE, FALSE, 0);
+    	gtk_entry_set_text(GTK_ENTRY(pEntry), "localhost");
     	pLabel = gtk_label_new("N° de port :");
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, FALSE, 0);
     	pEntry = gtk_entry_new();
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry, TRUE, FALSE, 0);
+    	gtk_entry_set_text(GTK_ENTRY(pEntry), "25555");
 
     	/* Creation d un GtkHSeparator */
     	pSeparator = gtk_hseparator_new();
@@ -96,7 +99,7 @@ int main(int argc, char **argv)
     	gtk_box_pack_start(GTK_BOX(pVBox), pButton2, FALSE, FALSE, 0);
     	
     	/* Connexion du signal "clicked" du GtkButton */
-		g_signal_connect(G_OBJECT(pButton2), "clicked", G_CALLBACK(on_clicked_button_deco), (GtkWidget*) pVBoxFrame);
+		g_signal_connect(G_OBJECT(pButton2), "clicked", G_CALLBACK(on_clicked_button_deco), NULL);
     
 
 	/* Connexion du signal "clicked" du GtkButton */
@@ -127,6 +130,23 @@ void on_clicked_button_deco(GtkWidget *pButton, gpointer data)
 	}
 }
 
+void quit_callback(GtkWidget *pButton, gpointer data)
+{
+	if(status == 1)
+	{
+		#ifdef CLIENT
+		pthread_cancel(threads[CAPTURE]);
+		closeSon(CAPTURE);
+		#endif
+		#ifdef SERVEUR
+		pthread_cancel(threads[PLAYBACK]);
+		closeSon(PLAYBACK);
+		#endif
+		status = 0;
+	}
+	gtk_main_quit();
+}
+
 void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 {
 	GtkWidget *pTempEntry;
@@ -153,7 +173,7 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 	/* Passage a l element suivant : le GtkEntry */
     	pList = g_list_next(pList);
 	pTempEntry = GTK_WIDGET(pList->data);
-
+	
 	/* Recuperation du texte contenu dans le 2e GtkEntry */
     	port = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
 
