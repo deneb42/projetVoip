@@ -40,10 +40,8 @@ int cree_socket_stream (const char * nom_hote, const char * nom_service, const c
 	memset(& adresse, 0, sizeof (struct sockaddr_in));
 	adresse.sin_family = AF_INET;
 	adresse.sin_port = servent->s_port;
-	adresse.sin_addr.s_addr =
-	((struct in_addr *) (hostent->h_addr))->s_addr;
-	if (bind(sock, (struct sockaddr *) & adresse,
-		sizeof(struct sockaddr_in)) < 0) {
+	adresse.sin_addr.s_addr = ((struct in_addr *) (hostent->h_addr))->s_addr;
+	if (bind(sock, (struct sockaddr *) & adresse, sizeof(struct sockaddr_in)) < 0) {
 		close(sock);
 		perror("bind");
 		return -1;
