@@ -14,7 +14,6 @@ int serveur_tcp (void);
 int quitter_le_serveur (void);
 void traite_connexion (int sock);
 
-
 int cree_socket_stream (const char * nom_hote, const char * nom_service, const char * nom_proto)
 {
 	int sock;
@@ -41,7 +40,7 @@ int cree_socket_stream (const char * nom_hote, const char * nom_service, const c
 	memset(& adresse, 0, sizeof (struct sockaddr_in));
 	adresse.sin_family = AF_INET;
 	adresse.sin_port = servent->s_port;
-	adresse.sin_addr . s_addr =
+	adresse.sin_addr.s_addr =
 	((struct in_addr *) (hostent->h_addr))->s_addr;
 	if (bind(sock, (struct sockaddr *) & adresse,
 		sizeof(struct sockaddr_in)) < 0) {
@@ -73,13 +72,11 @@ void traite_connexion (int sock)
 	socklen_t longueur;
 	char buffer[256];
 	longueur = sizeof(struct sockaddr_in);
-		if (getpeername(sock,(struct sockaddr *)& adresse,& longueur) < 0) {
-			perror("getpeername");
-			return;
-		}
-	sprintf(buffer, "IP = %s, Port = %u \n",
-	inet_ntoa(adresse.sin_addr),
-	ntohs(adresse.sin_port));
+	if (getpeername(sock,(struct sockaddr *)& adresse,& longueur) < 0) {
+		perror("getpeername");
+		return;
+	}
+	sprintf(buffer, "IP = %s, Port = %u \n", inet_ntoa(adresse.sin_addr), ntohs(adresse.sin_port));
 	fprintf(stdout, "Connexion : locale ");
 	affiche_adresse_socket(sock);
 	fprintf(stdout, " distante %s", buffer);
@@ -109,8 +106,7 @@ int serveur_tcp ()
 	affiche_adresse_socket(sock_contact);
 	while (! quitter_le_serveur()) {
 		longueur = sizeof(struct sockaddr_in);
-		sock_connectee = accept(sock_contact,
-		(struct sockaddr *)& adresse, & longueur);
+		sock_connectee = accept(sock_contact, (struct sockaddr *)& adresse, & longueur);
 		if (sock_connectee < 0) {
 			perror("accept");
 			return -1;

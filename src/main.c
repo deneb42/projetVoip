@@ -11,6 +11,7 @@
 #include "socket_utils.h"
 #include "client_serveur.h"
 #include "son.h"
+#include <pthread.h>
 
 char continuer;
 
@@ -26,6 +27,8 @@ void fnexit(int i)
 
 int launch (char* paradd, char* parport)
 {
+	pthread_t thread;
+	
 	// socket
 	struct sockaddr_in serveur;
 	int sock;

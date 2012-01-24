@@ -60,10 +60,14 @@ int main(int argc, char **argv)
     	pLabel = gtk_label_new("Adresse :");
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, TRUE, 0);
     	pEntry = gtk_entry_new();
+	/* Mets le texte contenu dans le 1er GtkEntry à "localhost" */
+	gtk_entry_set_text(GTK_ENTRY(pEntry),"localhost");
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry, TRUE, FALSE, 0);
     	pLabel = gtk_label_new("N° de port :");
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, FALSE, 0);
     	pEntry = gtk_entry_new();
+	/* Mets le texte contenu dans le 2e GtkEntry à "25555" */
+	gtk_entry_set_text(GTK_ENTRY(pEntry),"25555");
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry, TRUE, FALSE, 0);
 
     	/* Creation d un GtkHSeparator */
@@ -114,8 +118,7 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
     	pList = g_list_next(pList);
     	pTempEntry = GTK_WIDGET(pList->data);
 	
-	/* Mets le texte contenu dans le 1er GtkEntry à "localhost" */
-	gtk_entry_set_text(GTK_ENTRY(pTempEntry),"localhost");
+	
 
     	/* Recuperation du texte contenu dans le 1er GtkEntry */
     	adress = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
@@ -127,8 +130,7 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
     	pList = g_list_next(pList);
 	pTempEntry = GTK_WIDGET(pList->data);
 	
-	/* Mets le texte contenu dans le 2e GtkEntry à "25555" */
-	gtk_entry_set_text(GTK_ENTRY(pTempEntry),"25555");
+	
 
 	/* Recuperation du texte contenu dans le 2e GtkEntry */
     	port = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
