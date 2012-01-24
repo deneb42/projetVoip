@@ -15,8 +15,7 @@ int quitter_le_serveur (void);
 void traite_connexion (int sock);
 
 
-int
-cree_socket_stream (const char * nom_hote, const char * nom_service, const char * nom_proto)
+int cree_socket_stream (const char * nom_hote, const char * nom_service, const char * nom_proto)
 {
 	int sock;
 	struct sockaddr_in adresse;
@@ -40,7 +39,7 @@ cree_socket_stream (const char * nom_hote, const char * nom_service, const char 
 		return -1;
 	}
 	memset(& adresse, 0, sizeof (struct sockaddr_in));
-	adresse sin_family = AF_INET;
+	adresse.sin_family = AF_INET;
 	adresse.sin_port = servent->s_port;
 	adresse.sin_addr . s_addr =
 	((struct in_addr *) (hostent->h_addr))->s_addr;
@@ -96,7 +95,7 @@ int main (int argc, char * argv[])
 
 
 
-int serveur_tcp (void)
+int serveur_tcp ()
 {
 	int sock_contact;
 	int sock_connectee;
@@ -132,7 +131,7 @@ int serveur_tcp (void)
 }
 
 
-int quitter_le_serveur (void)
+int quitter_le_serveur ()
 {
 	return 0;
 }
