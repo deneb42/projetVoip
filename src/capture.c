@@ -19,7 +19,7 @@ void * boucle_capture(void *arg)
 	
 	param.serveur = tmp.serveur;
 	param.client = tmp.client;
-	param.sock = tmp.sock;
+	param.sock_udp = tmp.sock_udp;
 	
 	param.val = tmp.val;
 	param.frames = tmp.frames;
@@ -35,24 +35,24 @@ void * boucle_capture(void *arg)
 		capture(packetS.data);
 		
 		#ifdef SERVEUR
-			send(param.sock, &(param.client), &packetS);
+			sendn(param.sock_udp, &(param.client), &packetS);
 		#endif
 		#ifdef CLIENT
-			send(param.sock, &(param.serveur), &packetS);
+			sendn(param.sock_udp, &(param.serveur), &packetS);
         #endif
 	}
 	
 	return NULL;
 }
 
-int send(int sock, struct sockaddr_in * destination, s_MUV* packetS)
+int sendn(int sock, struct sockaddr_in * destination, s_MUV* packetS)
 {
 	int nbS;
 
 	if((nbS = sendto(sock, packetS, sizeof(s_MUV), 0, (struct sockaddr *) &destination, sizeof(struct sockaddr_in) )) > 0)
 	{
 		printf("[I] Packet %lu (%d bytes) : sent\n", packetS->id, nbS);
-		packetS.id++;
+		packetS->id++;
 		return EXIT_SUCCESS;
 	}
 		

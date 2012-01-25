@@ -51,6 +51,12 @@ int set_udp_address(struct sockaddr_in * address, char* port, char* host)
 	return set_address(address, AF_INET, port, host, "udp");
 }
 
+int set_tcp_address(struct sockaddr_in * address, char* port, char* host)
+{ /* Sur-function that initiate an address for a tcp connection */
+
+	return set_address(address, AF_INET, port, host, "tcp");
+}
+
 int sock_udp()
 { /* Create a UDP socket and returns its descriptor */
 
@@ -59,6 +65,20 @@ int sock_udp()
 	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) 
 	{
 		fprintf(stderr, "sock_udp : address and port must not be NULL");
+		exit(EXIT_FAILURE);
+	}
+	
+	return sock;
+}
+
+int sock_tcp()
+{ /* Create a TCP socket and returns its descriptor */
+
+	int sock;
+
+	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+	{
+		fprintf(stderr, "sock_tcp : address and port must not be NULL");
 		exit(EXIT_FAILURE);
 	}
 	

@@ -8,6 +8,6 @@
 
 	int init_capture();
 	void* boucle_capture(void* arg);
-	int send(int sock, struct sockaddr_in * destination, s_MUV* packetS);
+	int sendn(int sock, struct sockaddr_in * destination, s_MUV* packetS);
 	
 #endif

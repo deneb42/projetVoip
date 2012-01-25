@@ -4,6 +4,7 @@
 #ifndef CLIENT_SERVEUR_H
 #define CLIENT_SERVEUR_H
 
+
 	int traitement_client(int sock, struct sockaddr_in * serveur, s_MUV* packetS, s_MUV* packetR);
 	int traitement_serveur(int sock, s_MUV* packetS, s_MUV* packetR);
 	
@@ -12,5 +13,9 @@
 	
 	//int snd_client(int sock, struct sockaddr_in * serveur, s_MUV* packetS);
 	int rcv_client(int sock, s_MUV* packetR);
+
+	void* client_tcp_connexion (void* arg);
+	void* server_tcp_connexion (void* arg);
+	
 
 #endif

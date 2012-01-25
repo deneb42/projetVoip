@@ -21,8 +21,8 @@
 	typedef struct t_par_thread
 	{
 		struct sockaddr_in serveur, client;
-		int sock;
-
+		int sock_udp;
+		int sock_tcp;
 		unsigned int val;
 		snd_pcm_uframes_t frames;
 	} s_par_thread;

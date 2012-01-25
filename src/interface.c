@@ -10,9 +10,9 @@ pthread_t threads[2];
 int status;
 s_par_thread param;
 
-void on_clicked_button_connection(GtkWidget *pButton, gpointer data);
-void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data);
-void on_clicked_button_deco(GtkWidget *pButton, gpointer data);
+void on_clicked_button_action1(GtkWidget *pButton, gpointer data);
+void on_clicked_button_action2(GtkWidget *pButton, gpointer data);
+void on_clicked_button_deconnect(GtkWidget *pButton, gpointer data);
 void quit_callback(GtkWidget *pButton, gpointer data);
 
 int main(int argc, char **argv)
@@ -24,13 +24,13 @@ int main(int argc, char **argv)
     	GtkWidget *pVBoxFrame;
     	GtkWidget *pSeparator;
     	GtkWidget *pEntry;
-	GtkWidget *pButton1;
-	GtkWidget *pButton2;
+	GtkWidget *pButton;
 	GtkWidget *pLabel;
 	GtkWidget *pImage;
 
+
     	gtk_init(&argc, &argv);
-    status = 0;
+        status = 0;
 
 	/*Chargement des parametres d arriere plan */
 	gtk_rc_parse("./window.rc");
@@ -44,21 +44,23 @@ int main(int argc, char **argv)
 	/* Titre de la fenetre */
 	gtk_window_set_title(GTK_WINDOW(pWindow), "VoIP");
 	/* Definition de la taille de la fenetre */
-	gtk_window_set_default_size(GTK_WINDOW(pWindow), 320, 240);
+	gtk_window_set_default_size(GTK_WINDOW(pWindow), 320, 450);
 	
 	/* Connexion du signal "destroy" de la fenetre */
 	/* On appelle directement la fonction de sortie de boucle */
     	g_signal_connect(G_OBJECT(pWindow), "destroy", G_CALLBACK(quit_callback), NULL);
 
+
     	/* Creation de la GtkBox verticale */
-    	pVBox = gtk_vbox_new(TRUE, 0);
+    	pVBox = gtk_vbox_new(FALSE, 0);
+
+    	/* Ajout de la GtkVBox dans la fenetre */
+    	gtk_container_add(GTK_CONTAINER(pWindow), pVBox);
 
 	/* Chargement d'une image a partir d'un fichier */
     	pImage = gtk_image_new_from_file("../img/voip.png");
     	gtk_box_pack_start(GTK_BOX(pVBox), pImage, FALSE, FALSE, 0);
 
-    	/* Ajout de la GtkVBox dans la fenetre */
-    	gtk_container_add(GTK_CONTAINER(pWindow), pVBox);
 
     	/* Creation du premier GtkFrame */
 	#ifdef CLIENT
@@ -75,7 +77,7 @@ int main(int argc, char **argv)
 
     	/* Creation et insertion des elements contenus dans le premier GtkFrame */
     	pLabel = gtk_label_new("Adresse :");
-    	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, TRUE, 0);
+    	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, FALSE, 0);
     	pEntry = gtk_entry_new();
 	/* Mets le texte contenu dans le 1er GtkEntry à "localhost" */
 	gtk_entry_set_text(GTK_ENTRY(pEntry),"localhost");
@@ -93,28 +95,32 @@ int main(int argc, char **argv)
     	pSeparator = gtk_hseparator_new();
     	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pSeparator, TRUE, FALSE, 0);
 
-	/*pImage = gtk_image_new_from_file("../img/phone.gif");
-    	gtk_box_pack_start(GTK_BOX(pVBox), pImage, TRUE, TRUE, 0);*/
+	 /* Creation du label */
+	pLabel = gtk_label_new(NULL);
+        gtk_box_pack_start(GTK_BOX(pVBox), pLabel, TRUE, TRUE, 0);
 
-	
+	pImage = gtk_image_new();
+    	gtk_box_pack_start(GTK_BOX(pVBox), pImage, TRUE, TRUE, 0);
+
 	
 	/* Creation du bouton avec un label pour se connecter */
-    	pButton1 = gtk_button_new_with_label("Connexion");
-    	gtk_box_pack_start(GTK_BOX(pVBox), pButton1, FALSE, FALSE, 0);
+    	pButton = gtk_button_new_with_label("Connexion");
+    	gtk_box_pack_start(GTK_BOX(pVBox), pButton, FALSE, FALSE, 0);
 			
-			/* Connexion du signal "clicked" du GtkButton */
-		g_signal_connect(G_OBJECT(pButton1), "clicked", G_CALLBACK(on_clicked_button_connection), (GtkWidget*) pVBoxFrame);
+	/* Connexion du signal "clicked" du GtkButton */
+	g_signal_connect(G_OBJECT(pButton), "clicked", G_CALLBACK(on_clicked_button_action1), (GtkWidget*) pVBoxFrame);
 
-	/* Creation du bouton avec un label pour se deconnecter */
-	pButton2 = gtk_button_new_with_label("Déconnexion");
-    	gtk_box_pack_start(GTK_BOX(pVBox), pButton2, FALSE, FALSE, 0);
-    	
-    	/* Connexion du signal "clicked" du GtkButton */
-		g_signal_connect(G_OBJECT(pButton2), "clicked", G_CALLBACK(on_clicked_button_deco), NULL);
-    
 
 	/* Connexion du signal "clicked" du GtkButton */
-    	/*g_signal_connect(G_OBJECT(pButton), "clicked", G_CALLBACK(on_clicked_button_disconnection), (GtkWidget*) pWindow);*/
+	g_signal_connect(G_OBJECT(pButton), "clicked", G_CALLBACK(on_clicked_button_action2), (GtkWidget*) pVBox);
+
+	/* Creation du bouton avec un label pour se déconnecter */
+    	pButton = gtk_button_new_with_label("Déconnexion");
+    	gtk_box_pack_start(GTK_BOX(pVBox), pButton, TRUE, FALSE, 0);
+
+    	/* Connexion du signal "clicked" du GtkButton */
+	g_signal_connect(G_OBJECT(pButton), "clicked", G_CALLBACK(on_clicked_button_deconnect), NULL);
+    
 	
 	/* Affichage de la fenetre et de tout ce qu'elle contient */
     	gtk_widget_show_all(pWindow);
@@ -125,7 +131,7 @@ int main(int argc, char **argv)
     	return EXIT_SUCCESS;
 }
 
-void on_clicked_button_deco(GtkWidget *pButton, gpointer data)
+void on_clicked_button_deconnect(GtkWidget *pButton, gpointer data)
 {
 	if(status == 1)
 	{
@@ -158,10 +164,10 @@ void quit_callback(GtkWidget *pButton, gpointer data)
 	gtk_main_quit();
 }
 
-void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
+void on_clicked_button_action1(GtkWidget *pButton, gpointer data)
 {
 	GtkWidget *pTempEntry;
-    	GList *pList;
+	GList *pList;
 	const gchar *adress;
 	const gchar *port;
 	
@@ -171,13 +177,12 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
     	/* Recuperation de la liste des elements que contient la GtkVBox */
     	pList = gtk_container_get_children(GTK_CONTAINER((GtkWidget*)data));
 
-    	/* Le premier element est le GtkLabel "Adresse:" */
+    	/* Le premier element est le GtkLabel "Adresse:" de pList */
     	/* Passage a l element suivant : le GtkEntry */
     	pList = g_list_next(pList);
     	pTempEntry = GTK_WIDGET(pList->data);
 	
 	
-
     	/* Recuperation du texte contenu dans le 1er GtkEntry */
     	adress = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
 
@@ -196,9 +201,45 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 
 	/* Liberation de la memoire utilisee par la liste */
     	g_list_free(pList);
+
 		status = 1;
 	}
 }
 
+void on_clicked_button_action2(GtkWidget *pButton, gpointer data)
+{
+	GtkWidget *pTempLabel;
+	GtkWidget *pTempImage;
+	GtkWidget *pTempButton;
+	GList *pList;
+	
+    	/* Recuperation de la liste des elements que contient la GtkVBox */
+    	pList = gtk_container_get_children(GTK_CONTAINER((GtkWidget*)data));
 
+    	/* Le premier element est le GtkImage de pList */
+    	/* Passage a l element suivant : le GtkFrame */
+    	pList = g_list_next(pList);
+	
+	/* Passage a l element suivant : le GtkLabel */
+    	pList = g_list_next(pList);
+	pTempLabel = GTK_WIDGET(pList->data);
+
+	/* Passage a l element suivant : la GtkImage */
+    	pList = g_list_next(pList);
+	pTempImage = GTK_WIDGET(pList->data);
+
+	/* Passage a l element suivant : la GtkButton */
+    	pList = g_list_next(pList);
+	pTempButton = GTK_WIDGET(pList->data);
+
+	gtk_label_set_text(GTK_LABEL(pTempLabel), "Attente de Connexion");
+	
+	gtk_image_set_from_file(GTK_IMAGE(pTempImage),"../img/phone.gif");
+
+	//gtk_button_set_label (GTK_BUTTON(pTempButton), "Déconnexion");
+
+	/* Liberation de la memoire utilisee par la liste */
+    	g_list_free(pList);
+
+}
 

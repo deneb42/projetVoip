@@ -37,10 +37,10 @@ void* boucle_playback(void* arg)
 	{	
        
 		#ifdef SERVEUR
-			rc = rcv_serveur(param.sock, &(param.client), packetR + (index%TAILLE_LISTE) );
+			rc = rcv_serveur(param.sock_udp, &(param.client), packetR + (index%TAILLE_LISTE) );
 		#endif
 		#ifdef CLIENT
-			rc = rcv_client(param.sock, packetR + (index%TAILLE_LISTE) );
+			rc = rcv_client(param.sock_udp, packetR + (index%TAILLE_LISTE) );
 		#endif
 		
 		if(rc!=EXIT_FAILURE)

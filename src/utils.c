@@ -35,7 +35,7 @@ int getIndex(char* str)
 }
 
 /*int lecture_arguments (int argc, char * argv [], char** address, char** port) // DEPRECATED
-{ /* reads the arguments and put them in the appropriate strings. if not given, initialize to default values *
+{ // reads the arguments and put them in the appropriate strings. if not given, initialize to default values 
 
 	char * liste_options = "a:p:d:h";
 	int option;
