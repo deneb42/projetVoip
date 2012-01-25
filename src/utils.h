@@ -22,6 +22,7 @@
 		struct sockaddr_in serveur, client;
 		int sock_udp;
 		int sock_tcp;
+		int sock; // debug
 		unsigned int val;
 		snd_pcm_uframes_t frames;
 	} s_par_thread;

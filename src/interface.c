@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 	param_g.statut = 0;
 
 	/*Chargement des parametres d arriere plan */
-	gtk_rc_parse("./window.rc");
+	gtk_rc_parse("../data/window.rc");
 
 	/* Creation de la fenetre */
 	pWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 	gtk_container_add(GTK_CONTAINER(pWindow), pVBox);
 
 	/* Chargement d'une image a partir d'un fichier */
-	pImage = gtk_image_new_from_file("../img/voip.png");
+	pImage = gtk_image_new_from_file("../data/voip.png");
 	gtk_box_pack_start(GTK_BOX(pVBox), pImage, FALSE, FALSE, 0);
 
 
@@ -82,14 +82,14 @@ int main(int argc, char **argv)
 	/* Mets le texte contenu dans le 1er GtkEntry à "localhost" */
 	gtk_entry_set_text(GTK_ENTRY(pEntry),"localhost");
 	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry, TRUE, FALSE, 0);
-	gtk_entry_set_text(GTK_ENTRY(pEntry), "localhost");
+	
 	pLabel = gtk_label_new("N° de port :");
 	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, FALSE, 0);
 	pEntry = gtk_entry_new();
+	
 	/* Mets le texte contenu dans le 2e GtkEntry à "25555" */
 	gtk_entry_set_text(GTK_ENTRY(pEntry),"25555");
 	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry, TRUE, FALSE, 0);
-	gtk_entry_set_text(GTK_ENTRY(pEntry), "25555");
 
 	/* Creation d un GtkHSeparator */
 	pSeparator = gtk_hseparator_new();
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 }
 
 
-void on_clicked_button_deco(GtkWidget *pButton, s_par_gtk * param_g)
+void on_clicked_button_deconnect(GtkWidget *pButton, s_par_gtk * param_g)
 {
 	if(param_g->statut == 1)
 	{
@@ -149,7 +149,7 @@ void on_clicked_button_deco(GtkWidget *pButton, s_par_gtk * param_g)
 
 void quit_callback(GtkWidget *pButton, s_par_gtk * param_g)
 {
-	on_clicked_button_deco(pButton, param_g);
+	on_clicked_button_deconnect(pButton, param_g);
 	gtk_main_quit();
 }
 
@@ -232,7 +232,7 @@ void on_clicked_button_action2(GtkWidget *pButton, s_par_gtk * param_g)
 
 	gtk_label_set_text(GTK_LABEL(pTempLabel), "Attente de Connexion");
 
-	gtk_image_set_from_file(GTK_IMAGE(pTempImage),"../img/phone.gif");
+	gtk_image_set_from_file(GTK_IMAGE(pTempImage),"../data/phone.gif");
 
 	//gtk_button_set_label (GTK_BUTTON(pTempButton), "Déconnexion");
 
