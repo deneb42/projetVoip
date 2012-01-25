@@ -29,9 +29,15 @@ int main(int argc, char **argv)
 	gtk_init(&argc, &argv);
 
 	param_g.statut = 0;
-
+	
 	/*Chargement des parametres d arriere plan */
-	gtk_rc_parse("../data/window.rc");
+	#ifdef CLIENT
+		gtk_rc_parse("../data/window.rc");
+	#endif
+	#ifdef SERVEUR
+		gtk_rc_parse("../data/window2.rc");	
+	#endif
+	
 
 	/* Creation de la fenetre */
 	pWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -79,7 +85,12 @@ int main(int argc, char **argv)
 	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pLabel, TRUE, FALSE, 0);
 	pEntry = gtk_entry_new();
 	/* Mets le texte contenu dans le 1er GtkEntry à "localhost" */
-	gtk_entry_set_text(GTK_ENTRY(pEntry),"localhost");
+	#ifdef CLIENT
+		gtk_entry_set_text(GTK_ENTRY(pEntry),"localhost");
+	#endif
+	#ifdef SERVEUR
+		gtk_entry_set_text(GTK_ENTRY(pEntry),"0.0.0.0");
+	#endif
 	gtk_box_pack_start(GTK_BOX(pVBoxFrame), pEntry, TRUE, FALSE, 0);
 	
 	pLabel = gtk_label_new("N° de port :");
@@ -159,7 +170,7 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 	GList *pList;
 	const gchar *adress;
 	const gchar *port;
-	
+
 	if(param_g->statut == 0)
 	{	
 		/* Recuperation de la liste des elements que contient la GtkVBox */
