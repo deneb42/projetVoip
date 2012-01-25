@@ -158,48 +158,57 @@ void on_clicked_button_action1(GtkWidget *pButton, s_par_gtk * param_g)
 {
 	GtkWidget *pTempEntry;
 	GtkWidget *pTempBox;
-	GList *pList1;
-	GList *pList2;
+	GList *pList;
 	const gchar *adress;
 	const gchar *port;
 	
 	if(param_g->statut == 0)
 	{	
 		/* Recuperation de la liste des elements que contient la GtkVBox */
-		pList1 = gtk_container_get_children(GTK_CONTAINER(param_g->widget));
+		pList = gtk_container_get_children(GTK_CONTAINER(param_g->widget));
+		pTempBox= GTK_WIDGET(pList->data);
 		
 		/* Le premier element est la GtkImage:" de pList1 */
 		/* Passage a l element suivant : le GtkFrame */
-		pList1 = g_list_next(pList1);
+		pList = g_list_next(pList);
 		
-		/* Recuperation de la liste des elements que contient la GtkVBoxFrame */
-		pList2 = gtk_container_get_children(GTK_CONTAINER(GTK_WIDGET(pList1->data)));
+		/* Recuperation de la GtkVBoxFrame contenu dans la GtkFrame*/
+		pList = gtk_container_get_children(GTK_CONTAINER(GTK_WIDGET(pList->data)));
+		
+		pList = gtk_container_get_children(GTK_CONTAINER(GTK_WIDGET(pList->data)));
 
+		printf("%s\n",gtk_label_get_text(GTK_LABEL(pList->data)));
+		
 		/* Le premier element est le GtkLabel "Adresse:" de pList2 */
 		/* Passage a l element suivant : le GtkEntry */
-		pList2 = g_list_next(pList2);
-		pTempEntry = GTK_WIDGET(pList2->data);
-
+		pList = g_list_next(pList);
+		pTempEntry = GTK_WIDGET(pList->data);
+		//gtk_entry_set_text(GTK_ENTRY(pTempEntry),"test");
 
 		/* Recuperation du texte contenu dans le 1er GtkEntry */
 		adress = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
 
 		/* Passage a l element suivant : le GtkLabel "N° de port :" */
-		pList2 = g_list_next(pList2);
+		pList = g_list_next(pList);
 
 		/* Passage a l element suivant : le GtkEntry */
-		pList2 = g_list_next(pList2);
-		pTempEntry = GTK_WIDGET(pList2->data);
+		pList = g_list_next(pList);
+		pTempEntry = GTK_WIDGET(pList->data);
+
+		pList=
 
 		/* Recuperation du texte contenu dans le 2e GtkEntry */
 		port = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
 
 		/*Appel de la fonction principale */
 		launch((char*)adress, (char*)port, param_g->threads, &(param_g->param_t));
+		
 
 		/* Liberation de la memoire utilisee par la liste */
-		g_list_free(pList2);
-		g_list_free(pList1);
+		
+		g_list_free(pList);
+
+		
 		param_g->statut = 1;
 	}
 }
