@@ -8,7 +8,6 @@
 #include <pthread.h>
 
 #include "utils.h"
-#include "client_serveur.h"
 #include "son.h"
 #include "playback.h"
 
@@ -20,42 +19,49 @@ void* boucle_playback(void* arg)
 	int rc=EXIT_SUCCESS, index=0;
 	s_MUV packetR[TAILLE_LISTE];
 	
-	
 	if(initSon(PLAYBACK, &(param.val), &(param.frames)) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
 	
 	for(int i=0;i<TAILLE_LISTE;i++)
-	{
 		packetR[i].id=0;
-		//packetR[i].size = param.frames * 4; /* 2 bytes/sample, 2 channels */
-		//packetR[i].data = malloc(packetR[i].size);
-	}
-	
-	//pthread_cleanup_push(clean_playback, packetR);
 	
 	while (1) // boucle principale
 	{	
-       
 		#ifdef SERVEUR
+<<<<<<< HEAD
 			rc = rcv_serveur(param.sock_udp, &(param.client), packetR + (index%TAILLE_LISTE) );
 		#endif
 		#ifdef CLIENT
 			rc = rcv_client(param.sock_udp, packetR + (index%TAILLE_LISTE) );
+=======
+			rc = receiveMUV(param.sock, &(param.client), packetR + index);
+		#endif
+		#ifdef CLIENT
+			rc = receiveMUV(param.sock, NULL, packetR + index);
+>>>>>>> eb6dbf288b25958cff4358772b2da93b2d677f90
 		#endif
 		
 		if(rc!=EXIT_FAILURE)
 		{
-			//#ifdef CLIENT // DEBUG
-			playback(packetR[index%TAILLE_LISTE].data);
-			//playback(packetR->data);
-			//#endif
-			//memset(packetR[index%TAILLE_LISTE].data, 0, packetR[index%TAILLE_LISTE].size);
-			index++;
+			playback(packetR[index].data);
+			index = (index+1)%TAILLE_LISTE;
 		}
-		else
-			fprintf(stderr, "[E] Receiving error\n");
 	}
 	
 	return NULL;
 }
 
+int receiveMUV(int sock, struct sockaddr_in * source, s_MUV* packetR)
+{
+	int sockSize = sizeof(struct sockaddr_in);
+	int nbR;
+
+	if ((nbR = recvfrom(sock, packetR, sizeof(s_MUV), MSG_DONTWAIT, (struct sockaddr *) source, (socklen_t*)&sockSize )) > 0)
+	{
+		printf("[I] Packet %lu (%d bytes) : received\n", packetR->id, nbR);
+		return EXIT_SUCCESS;
+	}
+		
+	fprintf(stderr, "[E] Sending error\n");
+	return EXIT_FAILURE;
+}

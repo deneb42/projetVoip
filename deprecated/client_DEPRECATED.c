@@ -37,7 +37,7 @@ int snd_client(int sock, struct sockaddr_in * serveur, s_MUV* packetS)
 	}
 		
 	return EXIT_SUCCESS;
-}*/
+}*
 
 int rcv_client(int sock, s_MUV* packetR)
 {
@@ -56,6 +56,7 @@ int rcv_client(int sock, s_MUV* packetR)
 	
 	return EXIT_SUCCESS;
 }
+<<<<<<< HEAD
 
 void* client_tcp_connexion (void* arg)
 {
@@ -85,3 +86,6 @@ void* client_tcp_connexion (void* arg)
 
 	return NULL;
 }
+=======
+*/
+>>>>>>> eb6dbf288b25958cff4358772b2da93b2d677f90

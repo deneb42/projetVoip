@@ -1,36 +1,28 @@
-/* utils.c						By : deneb					last modif : 09/12/11	   \
+/* projetVoip					By : deneb					last modif : 09/12/11	   \
 \_____________________________________________________________________________________*/
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include <arpa/inet.h>
+#include <alsa/asoundlib.h>
+#include <signal.h>
+#include <pthread.h>
 
 #include "utils.h"
+#include "socket_utils.h"
+#include "son.h"
+#include "capture.h"
+#include "playback.h"
 
-/* DEPRECATED 
- * 
-void * MUVtoStr(s_MUV * packet, char* str)
-{
-	memcpy(str, &(packet->id), sizeof(long));
-	memcpy(str+sizeof(long), packet->data, packet->size);
-	
-	return str;
-}
+//problème : l'adresse du client n'est pas gardé entre récéption et envoi
 
-void * strtoMUV(s_MUV * packet, char* str)
-{
-	memcpy(&(packet->id), str, sizeof(long));
-	memcpy(packet->data, str+sizeof(long), packet->size);
-	
-	return packet;
-}*/
+// selection de l'adresse a amméliorer
 
-int getIndex(char* str)
+int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
 {
-	int id;
-	memcpy(str, &id, sizeof(long));
+	char *address, *port;
 	
+<<<<<<< HEAD
 	return id;
 }
 
@@ -41,33 +33,39 @@ int getIndex(char* str)
 	int option;
 	char* ad = "localhost";
 	char* po = "2000";
+=======
+	// param contient les variables nécéssaires dans les threads pour le son et les socket
+>>>>>>> eb6dbf288b25958cff4358772b2da93b2d677f90
 	
-	if(address == NULL || port==NULL)
-	{
-		fprintf(stderr, "lecture_arguments : address, dest and port must not be NULL");
-		return EXIT_FAILURE;
-	}
+	// pour le son
+	param->val = 11025;
+	param->frames = SIZE_PACKET / 4; // 2 bytes par channel, 2 channels
 	
-	*address = ad;
-	*port = po;
-
-	while ((option = getopt(argc, argv, liste_options)) != -1) 
-	{
-		switch (option) 
+	address = paradd;
+	port = parport; // need verification de la véracité des paramètres
+	
+	param->sock = sock_udp();
+	
+	#ifdef CLIENT
+		set_udp_address(&(param->serveur), port, address);
+	#endif
+	#ifdef SERVEUR
+		set_udp_address(&(param->serveur), port, NULL);
+		if (bind(param->sock, (struct sockaddr *) &(param->serveur), sizeof(struct sockaddr_in)) < 0) 
 		{
-			case 'a' :
-				*address = optarg;
-				break;
-			case 'p' :
-				*port = optarg;
-				break;
-			case 'h' :
-				fprintf(stderr, "Syntaxe : %s [-a adresse] [-p port] \n", argv[0]);
-				return EXIT_FAILURE;
-			default :
-				break;
+			perror("bind");
+			exit(EXIT_FAILURE);
 		}
-	}
-
+	#endif
+	
+	printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->serveur.sin_addr), ntohs(param->serveur.sin_port));
+	// Fin sockets
+	
+	#ifdef CLIENT
+	pthread_create(threads + CAPTURE, 0, boucle_capture, param);
+	#endif
+	#ifdef SERVEUR
+	pthread_create(threads + PLAYBACK, 0, boucle_playback, param);
+	#endif
 	return EXIT_SUCCESS;
-} */
+}

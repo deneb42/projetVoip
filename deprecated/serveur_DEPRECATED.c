@@ -31,7 +31,7 @@ int snd_serveur(int sock, struct sockaddr_in * client, s_MUV* packetS)
 		printf("berf1\n");
 
 	return EXIT_SUCCESS;
-} */
+} *
 
 int rcv_serveur(int sock, struct sockaddr_in * client, s_MUV* packetR)
 {
@@ -51,6 +51,7 @@ int rcv_serveur(int sock, struct sockaddr_in * client, s_MUV* packetR)
 	
 	return EXIT_SUCCESS;
 }
+<<<<<<< HEAD
 
 
 void* server_tcp_connexion (void* arg)
@@ -89,3 +90,6 @@ void* server_tcp_connexion (void* arg)
   
 	return NULL;
 }
+=======
+*/
+>>>>>>> eb6dbf288b25958cff4358772b2da93b2d677f90
