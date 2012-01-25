@@ -195,8 +195,7 @@ void on_clicked_button_action1(GtkWidget *pButton, s_par_gtk * param_g)
 		pList = g_list_next(pList);
 		pTempEntry = GTK_WIDGET(pList->data);
 
-		pList=
-
+		
 		/* Recuperation du texte contenu dans le 2e GtkEntry */
 		port = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
 
