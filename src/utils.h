@@ -20,7 +20,7 @@
 	typedef struct t_par_thread
 	{
 		struct sockaddr_in serveur, client;
-		struct sockaddr_in destination;
+		struct sockaddr_in destination, source;
 		int sock_udp;
 		int sock_tcp;
 		int sock; // debug
@@ -37,5 +37,7 @@
 	} s_par_gtk;
 
 	int launch (char* paradd, char* port, pthread_t* threads, s_par_thread* param);
+	
+	int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_thread* param);
 
 #endif

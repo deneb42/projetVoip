@@ -22,7 +22,7 @@ void * boucle_capture(void *arg)
 
 	packetS.id=0;
 
-	while(1) // boucle principale
+	//while(1) // boucle principale
 	{	
 		capture(packetS.data);
 		

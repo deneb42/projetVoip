@@ -25,7 +25,7 @@ void* boucle_playback(void* arg)
 	for(int i=0;i<TAILLE_LISTE;i++)
 		packetR[i].id=0;
 	
-	while (1) // boucle principale
+	//while (1) // boucle principale
 	{	
 		#ifdef SERVEUR
 			rc = receiveMUV(param.sock, /*&(param.client)*/NULL, packetR + index);
@@ -55,6 +55,6 @@ int receiveMUV(int sock, struct sockaddr_in * source, s_MUV* packetR)
 		return EXIT_SUCCESS;
 	}
 		
-	fprintf(stderr, "[E] Sending error\n");
+	fprintf(stderr, "[E] Receiving error\n");
 	return EXIT_FAILURE;
 }

@@ -19,48 +19,55 @@
 int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
 {
 	char *address, *port;
-	int sock_tcp, sockSize;
+	int sockTcp, sock2;
+	socklen_t sockSize = 0;
 
 	address = paradd;
 	port = parport; // need verification de la véracité des paramètres
 	
-	sock_tcp = sock_tcp();
+	sockTcp = sock_tcp();
 	
 	#ifdef CLIENT
+	
 		if(set_tcp_address(&(param->destination), port, address) == EXIT_FAILURE)
 			return EXIT_FAILURE;
+		
+		printf("[I] demande de connec a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
+		
+		if (connect (sockTcp, (struct sockaddr *) &param->destination, sizeof(struct sockaddr_in)) < 0) {
+			perror ("connect");
+			return(EXIT_FAILURE);
+		}
+		getsockname(sockTcp, (struct sockaddr*) &(param->source), &sockSize);
+		printf("[I] connec depuis l'adresse IP = %s, Port = %u \n", inet_ntoa(param->source.sin_addr), ntohs(param->source.sin_port));
 	#endif
 	#ifdef SERVEUR
-		if(set_tcp_address(&(param->destination), port, NULL) == EXIT_FAILURE)
+		memset(&param->destination, 0, sizeof (struct sockaddr_in));
+	
+		if(set_tcp_address(&(param->source), port, NULL) == EXIT_FAILURE)
 			return EXIT_FAILURE;
 
-		if (bind(sock_tcp, (struct sockaddr *) &(param->destination), sizeof(struct sockaddr_in)) < 0) 
+		if (bind(sockTcp, (struct sockaddr *) &(param->source), sizeof(struct sockaddr_in)) < 0) 
 		{
 			perror("bind");
 			return(EXIT_FAILURE);
 		}
+		printf("[I] Attente de connec sur l'adresse IP = %s, Port = %u \n", inet_ntoa(param->source.sin_addr), ntohs(param->source.sin_port));
+		listen (sockTcp, 5);
 
-	#endif
-	printf("[I] demande de connec a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->serveur.sin_addr), ntohs(param->serveur.sin_port));
-
-	#ifdef CLIENT
-		if (connect (sock_tcp, (struct sockaddr *) & param.serveur, /*(socklen_t)*/sockSize)) < 0) {
-			perror ("connect");
-			return(EXIT_FAILURE);
-		}
-	#endif
-	#ifdef SERVEUR
-		if(accept(sock_tcp, (struct sockaddr *) & param.destination, (socklen_t *) sockSize) < 0) 
+		if((sock2 = accept(sockTcp, (struct sockaddr *)&(param->destination), &sockSize)) < 0) 
 		{
 			perror ("accept");
 			exit(EXIT_FAILURE);
 		}
-
-		printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param.client.sin_addr), ntohs(param.client.sin_port));
+		getpeername(sock2, (struct sockaddr*) &(param->destination), &sockSize);
+	printf("[I] connec depuis l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
 	#endif
 	
-	shutdown(sock_tcp);
+	shutdown(sockTcp, SHUT_RDWR);
 	
+	//param->destination->sin_port = htons(port);
+	printf("port : %s\n", port);
 	launch(NULL, NULL, threads, param);
 	
 	return EXIT_SUCCESS;
