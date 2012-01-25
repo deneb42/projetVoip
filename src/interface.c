@@ -7,8 +7,8 @@
 #include "son.h"
 
 void on_clicked_button_connection(GtkWidget *pButton, s_par_gtk * data);
-void on_clicked_button_deco(s_par_gtk * param_g);
-void quit_callback(s_par_gtk * param_g);
+void on_clicked_button_deco(GtkWidget *pButton, s_par_gtk * param_g);
+void quit_callback(GtkWidget *pButton, s_par_gtk * param_g);
 
 int main(int argc, char **argv)
 {
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
     	return EXIT_SUCCESS;
 }
 
-void on_clicked_button_deco(s_par_gtk * param_g)
+void on_clicked_button_deco(GtkWidget *pButton, s_par_gtk * param_g)
 {
 	if(param_g->statut == 1)
 	{
@@ -133,9 +133,9 @@ void on_clicked_button_deco(s_par_gtk * param_g)
 	}
 }
 
-void quit_callback(s_par_gtk * param_g)
+void quit_callback(GtkWidget *pButton, s_par_gtk * param_g)
 {
-	on_clicked_button_deco(param_g);
+	on_clicked_button_deco(pButton, param_g);
 	gtk_main_quit();
 }
 
@@ -155,7 +155,7 @@ void on_clicked_button_connection(GtkWidget *pButton, s_par_gtk * param_g)
     	/* Le premier element est le GtkLabel "Adresse:" */
     	/* Passage a l element suivant : le GtkEntry */
     	pList = g_list_next(pList);
-    	pTempEntry = GTK_WIDGET(pList->param_g->widget);
+    	pTempEntry = GTK_WIDGET(pList->data);
 	
 	
 
@@ -167,7 +167,7 @@ void on_clicked_button_connection(GtkWidget *pButton, s_par_gtk * param_g)
 
 	/* Passage a l element suivant : le GtkEntry */
     	pList = g_list_next(pList);
-	pTempEntry = GTK_WIDGET(pList->param_g->widget);
+	pTempEntry = GTK_WIDGET(pList->data);
 	
 	/* Recuperation du texte contenu dans le 2e GtkEntry */
     	port = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
