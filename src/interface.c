@@ -52,6 +52,7 @@ int main(int argc, char **argv)
 
 	/* Creation de la GtkBox verticale */
 	pVBox = gtk_vbox_new(FALSE, 0);
+	param_g.widget = pVBox;
 
 	/* Ajout de la GtkVBox dans la fenetre */
 	gtk_container_add(GTK_CONTAINER(pWindow), pVBox);
@@ -71,7 +72,7 @@ int main(int argc, char **argv)
 	gtk_box_pack_start(GTK_BOX(pVBox), pFrame, TRUE, TRUE, 0);
 
 	/* Creation et insertion d une boite pour le premier GtkFrame */
-	pVBoxFrame = gtk_vbox_new(TRUE, 0);
+	pVBoxFrame = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(pFrame), pVBoxFrame);
 
 	/* Creation et insertion des elements contenus dans le premier GtkFrame */
@@ -106,7 +107,6 @@ int main(int argc, char **argv)
 	pButton = gtk_button_new_with_label("Connexion");
 	gtk_box_pack_start(GTK_BOX(pVBox), pButton, FALSE, FALSE, 0);
 			
-	param_g.widget = pVBox;
 	/* Connexion du signal "clicked" du GtkButton */
 	g_signal_connect(G_OBJECT(pButton), "clicked", G_CALLBACK(on_clicked_button_action1), &param_g);
 
@@ -157,21 +157,33 @@ void quit_callback(GtkWidget *pButton, s_par_gtk * param_g)
 void on_clicked_button_action1(GtkWidget *pButton, s_par_gtk * param_g)
 {
 	GtkWidget *pTempEntry;
+	GtkWidget *pTempBox;
 	GList *pList;
 	const gchar *adress;
 	const gchar *port;
 	
 	if(param_g->statut == 0)
-	{
-
+	{	
 		/* Recuperation de la liste des elements que contient la GtkVBox */
 		pList = gtk_container_get_children(GTK_CONTAINER(param_g->widget));
+		pTempBox= GTK_WIDGET(pList->data);
+		
+		/* Le premier element est la GtkImage:" de pList1 */
+		/* Passage a l element suivant : le GtkFrame */
+		pList = g_list_next(pList);
+		
+		/* Recuperation de la GtkVBoxFrame contenu dans la GtkFrame*/
+		pList = gtk_container_get_children(GTK_CONTAINER(GTK_WIDGET(pList->data)));
+		
+		pList = gtk_container_get_children(GTK_CONTAINER(GTK_WIDGET(pList->data)));
 
-		/* Le premier element est le GtkLabel "Adresse:" de pList */
+		printf("%s\n",gtk_label_get_text(GTK_LABEL(pList->data)));
+		
+		/* Le premier element est le GtkLabel "Adresse:" de pList2 */
 		/* Passage a l element suivant : le GtkEntry */
 		pList = g_list_next(pList);
 		pTempEntry = GTK_WIDGET(pList->data);
-
+		//gtk_entry_set_text(GTK_ENTRY(pTempEntry),"test");
 
 		/* Recuperation du texte contenu dans le 1er GtkEntry */
 		adress = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
@@ -183,15 +195,19 @@ void on_clicked_button_action1(GtkWidget *pButton, s_par_gtk * param_g)
 		pList = g_list_next(pList);
 		pTempEntry = GTK_WIDGET(pList->data);
 
+		
 		/* Recuperation du texte contenu dans le 2e GtkEntry */
 		port = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
 
 		/*Appel de la fonction principale */
 		launch((char*)adress, (char*)port, param_g->threads, &(param_g->param_t));
+		
 
 		/* Liberation de la memoire utilisee par la liste */
+		
 		g_list_free(pList);
 
+		
 		param_g->statut = 1;
 	}
 }

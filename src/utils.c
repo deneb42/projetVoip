@@ -28,7 +28,7 @@ int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param
 	address = paradd;
 	port = parport; // need verification de la véracité des paramètres
 	
-	param->sock = sock_udp();
+	param->sock_udp = sock_udp();
 	
 	#ifdef CLIENT
 		//set_udp_address(&(param->serveur), port, address);
