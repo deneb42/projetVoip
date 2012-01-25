@@ -6,14 +6,9 @@
 #include "utils.h"
 #include "son.h"
 
-pthread_t threads[2];
-int status;
-s_par_thread param;
-
-void on_clicked_button_connection(GtkWidget *pButton, gpointer data);
-void on_clicked_button_disconnection(GtkWidget *pButton, gpointer data);
-void on_clicked_button_deco(GtkWidget *pButton, gpointer data);
-void quit_callback(GtkWidget *pButton, gpointer data);
+void on_clicked_button_connection(GtkWidget *pButton, s_par_gtk * data);
+void on_clicked_button_deco(s_par_gtk * param_g);
+void quit_callback(s_par_gtk * param_g);
 
 int main(int argc, char **argv)
 {
@@ -29,8 +24,11 @@ int main(int argc, char **argv)
 	GtkWidget *pLabel;
 	GtkWidget *pImage;
 
-    	gtk_init(&argc, &argv);
-    status = 0;
+    s_par_gtk param_g;
+    
+    gtk_init(&argc, &argv);
+    
+    param_g.statut = 0;
 
 	/*Chargement des parametres d arriere plan */
 	gtk_rc_parse("./window.rc");
@@ -48,7 +46,7 @@ int main(int argc, char **argv)
 	
 	/* Connexion du signal "destroy" de la fenetre */
 	/* On appelle directement la fonction de sortie de boucle */
-    	g_signal_connect(G_OBJECT(pWindow), "destroy", G_CALLBACK(quit_callback), NULL);
+    	g_signal_connect(G_OBJECT(pWindow), "destroy", G_CALLBACK(quit_callback), &param_g);
 
     	/* Creation de la GtkBox verticale */
     	pVBox = gtk_vbox_new(TRUE, 0);
@@ -96,14 +94,15 @@ int main(int argc, char **argv)
     	gtk_box_pack_start(GTK_BOX(pVBox), pButton1, FALSE, FALSE, 0);
 			
 			/* Connexion du signal "clicked" du GtkButton */
-		g_signal_connect(G_OBJECT(pButton1), "clicked", G_CALLBACK(on_clicked_button_connection), (GtkWidget*) pVBoxFrame);
+		param_g.widget = pVBoxFrame;
+		g_signal_connect(G_OBJECT(pButton1), "clicked", G_CALLBACK(on_clicked_button_connection), &param_g);
 
 	/* Creation du bouton avec un label pour se deconnecter */
 	pButton2 = gtk_button_new_with_label("Déconnexion");
     	gtk_box_pack_start(GTK_BOX(pVBox), pButton2, FALSE, FALSE, 0);
     	
     	/* Connexion du signal "clicked" du GtkButton */
-		g_signal_connect(G_OBJECT(pButton2), "clicked", G_CALLBACK(on_clicked_button_deco), NULL);
+		g_signal_connect(G_OBJECT(pButton2), "clicked", G_CALLBACK(on_clicked_button_deco), &param_g);
     
 
 	/* Connexion du signal "clicked" du GtkButton */
@@ -118,56 +117,45 @@ int main(int argc, char **argv)
     	return EXIT_SUCCESS;
 }
 
-void on_clicked_button_deco(GtkWidget *pButton, gpointer data)
+void on_clicked_button_deco(s_par_gtk * param_g)
 {
-	if(status == 1)
+	if(param_g->statut == 1)
 	{
 		#ifdef CLIENT
-		pthread_cancel(threads[CAPTURE]);
+		pthread_cancel(param_g->threads[CAPTURE]);
 		closeSon(CAPTURE);
 		#endif
 		#ifdef SERVEUR
-		pthread_cancel(threads[PLAYBACK]);
+		pthread_cancel(param_g->threads[PLAYBACK]);
 		closeSon(PLAYBACK);
 		#endif
-		status = 0;
+		param_g->statut = 0;
 	}
 }
 
-void quit_callback(GtkWidget *pButton, gpointer data)
+void quit_callback(s_par_gtk * param_g)
 {
-	if(status == 1)
-	{
-		#ifdef CLIENT
-		pthread_cancel(threads[CAPTURE]);
-		closeSon(CAPTURE);
-		#endif
-		#ifdef SERVEUR
-		pthread_cancel(threads[PLAYBACK]);
-		closeSon(PLAYBACK);
-		#endif
-		status = 0;
-	}
+	on_clicked_button_deco(param_g);
 	gtk_main_quit();
 }
 
-void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
+void on_clicked_button_connection(GtkWidget *pButton, s_par_gtk * param_g)
 {
 	GtkWidget *pTempEntry;
     	GList *pList;
 	const gchar *adress;
 	const gchar *port;
 	
-	if(status == 0)
+	if(param_g->statut == 0)
 	{
 
     	/* Recuperation de la liste des elements que contient la GtkVBox */
-    	pList = gtk_container_get_children(GTK_CONTAINER((GtkWidget*)data));
+    	pList = gtk_container_get_children(GTK_CONTAINER(param_g->widget));
 
     	/* Le premier element est le GtkLabel "Adresse:" */
     	/* Passage a l element suivant : le GtkEntry */
     	pList = g_list_next(pList);
-    	pTempEntry = GTK_WIDGET(pList->data);
+    	pTempEntry = GTK_WIDGET(pList->param_g->widget);
 	
 	
 
@@ -179,16 +167,16 @@ void on_clicked_button_connection(GtkWidget *pButton, gpointer data)
 
 	/* Passage a l element suivant : le GtkEntry */
     	pList = g_list_next(pList);
-	pTempEntry = GTK_WIDGET(pList->data);
+	pTempEntry = GTK_WIDGET(pList->param_g->widget);
 	
 	/* Recuperation du texte contenu dans le 2e GtkEntry */
     	port = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
 
 	/*Appel de la fonction principale */
-    	launch(adress, port, threads, &param);
+    	launch((char*)adress, (char*)port, param_g->threads, &(param_g->param_t));
 
 	/* Liberation de la memoire utilisee par la liste */
     	g_list_free(pList);
-		status = 1;
+		param_g->statut = 1;
 	}
 }
