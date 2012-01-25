@@ -1,4 +1,14 @@
+gcc -D CLIENT -o utils_client.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c utils.c 
+gcc -D CLIENT -o socket_utils_client.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c socket_utils.c 
+gcc -D CLIENT -o son_client.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c son.c 
 gcc -D CLIENT -o interface_client.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c interface.c 
+gcc -D CLIENT -o capture_client.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c capture.c 
+gcc -D CLIENT -o playback_client.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c playback.c 
 gcc -o ./client utils_client.o  socket_utils_client.o  son_client.o  interface_client.o  capture_client.o  playback_client.o    -lasound -pthread `pkg-config --libs gtk+-2.0` 
+gcc -D SERVEUR -o utils_serveur.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c utils.c
+gcc -D SERVEUR -o socket_utils_serveur.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c socket_utils.c
+gcc -D SERVEUR -o son_serveur.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c son.c
 gcc -D SERVEUR -o interface_serveur.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c interface.c
+gcc -D SERVEUR -o capture_serveur.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c capture.c
+gcc -D SERVEUR -o playback_serveur.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c playback.c
 gcc -o ./serveur utils_serveur.o  socket_utils_serveur.o  son_serveur.o  interface_serveur.o  capture_serveur.o  playback_serveur.o    -lasound -pthread `pkg-config --libs gtk+-2.0`

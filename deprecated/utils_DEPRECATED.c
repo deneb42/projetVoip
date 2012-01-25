@@ -9,7 +9,7 @@
 #include "utils.h"
 
 /* DEPRECATED 
- * 
+
 void * MUVtoStr(s_MUV * packet, char* str)
 {
 	memcpy(str, &(packet->id), sizeof(long));
@@ -24,7 +24,7 @@ void * strtoMUV(s_MUV * packet, char* str)
 	memcpy(packet->data, str+sizeof(long), packet->size);
 	
 	return packet;
-}*
+}
 
 int getIndex(char* str)
 {
@@ -70,4 +70,5 @@ int getIndex(char* str)
 	}
 
 	return EXIT_SUCCESS;
-} */
+} 
+*/
