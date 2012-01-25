@@ -28,17 +28,10 @@ void* boucle_playback(void* arg)
 	while (1) // boucle principale
 	{	
 		#ifdef SERVEUR
-<<<<<<< HEAD
-			rc = rcv_serveur(param.sock_udp, &(param.client), packetR + (index%TAILLE_LISTE) );
-		#endif
-		#ifdef CLIENT
-			rc = rcv_client(param.sock_udp, packetR + (index%TAILLE_LISTE) );
-=======
 			rc = receiveMUV(param.sock, &(param.client), packetR + index);
 		#endif
 		#ifdef CLIENT
 			rc = receiveMUV(param.sock, NULL, packetR + index);
->>>>>>> eb6dbf288b25958cff4358772b2da93b2d677f90
 		#endif
 		
 		if(rc!=EXIT_FAILURE)

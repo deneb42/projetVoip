@@ -24,7 +24,7 @@ void * strtoMUV(s_MUV * packet, char* str)
 	memcpy(packet->data, str+sizeof(long), packet->size);
 	
 	return packet;
-}*/
+}*
 
 int getIndex(char* str)
 {

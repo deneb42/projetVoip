@@ -205,7 +205,6 @@ void on_clicked_button_action1(GtkWidget *pButton, gpointer data)
 		status = 1;
 	}
 }
-<<<<<<< HEAD
 
 void on_clicked_button_action2(GtkWidget *pButton, gpointer data)
 {
@@ -244,5 +243,3 @@ void on_clicked_button_action2(GtkWidget *pButton, gpointer data)
 
 }
 
-=======
->>>>>>> eb6dbf288b25958cff4358772b2da93b2d677f90

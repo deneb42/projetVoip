@@ -35,44 +35,28 @@ void * boucle_capture(void *arg)
 		capture(packetS.data);
 		
 		#ifdef SERVEUR
-<<<<<<< HEAD
-			sendn(param.sock_udp, &(param.client), &packetS);
-		#endif
-		#ifdef CLIENT
-			sendn(param.sock_udp, &(param.serveur), &packetS);
-=======
 			rc = sendMUV(param.sock, &(param.client), &packetS);
 		#endif
 		#ifdef CLIENT
 			rc = sendMUV(param.sock, &(param.serveur), &packetS);
->>>>>>> eb6dbf288b25958cff4358772b2da93b2d677f90
-        #endif
-        if(rc != EXIT_FAILURE)
+        	#endif
+        	if(rc != EXIT_FAILURE)
 			packetS.id++;
 	}
 	
 	return NULL;
 }
 
-<<<<<<< HEAD
-int sendn(int sock, struct sockaddr_in * destination, s_MUV* packetS)
-=======
 int sendMUV(int sock, struct sockaddr_in * destination, s_MUV* packetS)
->>>>>>> eb6dbf288b25958cff4358772b2da93b2d677f90
 {
 	int nbS;
 
 	if((nbS = sendto(sock, packetS, sizeof(s_MUV), 0, (struct sockaddr *) destination, sizeof(struct sockaddr_in) )) > 0)
 	{
 		printf("[I] Packet %lu (%d bytes) : sent\n", packetS->id, nbS);
-<<<<<<< HEAD
-		packetS->id++;
-=======
->>>>>>> eb6dbf288b25958cff4358772b2da93b2d677f90
 		return EXIT_SUCCESS;
 	}
 		
 	fprintf(stderr, "[E] Packet %lu : error, %d bytes sent\n", packetS->id, nbS);
-	perror("fuck");
 	return EXIT_FAILURE;
 }

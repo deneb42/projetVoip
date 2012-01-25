@@ -21,21 +21,8 @@
 int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
 {
 	char *address, *port;
-	
-<<<<<<< HEAD
-	return id;
-}
 
-/*int lecture_arguments (int argc, char * argv [], char** address, char** port) // DEPRECATED
-{ // reads the arguments and put them in the appropriate strings. if not given, initialize to default values 
-
-	char * liste_options = "a:p:d:h";
-	int option;
-	char* ad = "localhost";
-	char* po = "2000";
-=======
 	// param contient les variables nécéssaires dans les threads pour le son et les socket
->>>>>>> eb6dbf288b25958cff4358772b2da93b2d677f90
 	
 	// pour le son
 	param->val = 11025;
