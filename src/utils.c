@@ -31,14 +31,14 @@ int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param
 	address = paradd;
 	port = parport; // need verification de la véracité des paramètres
 	
-	param->sock = sock_udp();
+	param->sock_udp = sock_udp();
 	
 	#ifdef CLIENT
 		set_udp_address(&(param->serveur), port, address);
 	#endif
 	#ifdef SERVEUR
 		set_udp_address(&(param->serveur), port, NULL);
-		if (bind(param->sock, (struct sockaddr *) &(param->serveur), sizeof(struct sockaddr_in)) < 0) 
+		if (bind(param->sock_udp, (struct sockaddr *) &(param->serveur), sizeof(struct sockaddr_in)) < 0) 
 		{
 			perror("bind");
 			exit(EXIT_FAILURE);
