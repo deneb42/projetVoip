@@ -14,9 +14,6 @@
 #include "capture.h"
 #include "playback.h"
 
-//problème : l'adresse du client n'est pas gardé entre récéption et envoi
-
-// selection de l'adresse a amméliorer
 
 int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
 {
@@ -34,10 +31,10 @@ int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param
 	param->sock = sock_udp();
 	
 	#ifdef CLIENT
-		set_udp_address(&(param->serveur), port, address);
+		//set_udp_address(&(param->serveur), port, address);
 	#endif
 	#ifdef SERVEUR
-		set_udp_address(&(param->serveur), port, NULL);
+		//set_udp_address(&(param->serveur), port, NULL);
 		if (bind(param->sock, (struct sockaddr *) &(param->serveur), sizeof(struct sockaddr_in)) < 0) 
 		{
 			perror("bind");

@@ -16,64 +16,53 @@
 #include "capture.h"
 #include "playback.h"
 
-//problème : l'adresse du client n'est pas gardé entre récéption et envoi
-
-// on doit perdre le socket quelque part, erreur a l'envoi><<<<<<>>>
-
-// selection de l'adresse a amméliorer
-
-// voir a utiliser directement une string d'ou on pourrait getID, get...
-
-
-int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
+int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
 {
 	char *address, *port;
-	
-	// param contient les variables nécéssaires dans les threads pour le son et les socket
-	
-	// pour le son
-	param->val = 11025;
-	param->frames = SIZE_PACKET / 4; // 2 bytes par channel, 2 channels
-	
-	//if (lecture_arguments(argc, argv, &address, &port) == EXIT_FAILURE)
-	//	exit(EXIT_FAILURE);
+	int sock_tcp, sockSize;
+
 	address = paradd;
-	port = parport;
+	port = parport; // need verification de la véracité des paramètres
 	
-	param->sock_tcp = sock_tcp();
-	param->sock_udp = sock_udp();
+	sock_tcp = sock_tcp();
 	
 	#ifdef CLIENT
-		set_tcp_address(&(param->serveur), port, address);
-		set_udp_address(&(param->serveur), port, address);
+		if(set_tcp_address(&(param->destination), port, address) == EXIT_FAILURE)
+			return EXIT_FAILURE;
 	#endif
 	#ifdef SERVEUR
-		set_tcp_address(&(param->serveur), port, address);
-		set_udp_address(&(param->serveur), port, NULL);
-		if (bind(param->sock_udp, (struct sockaddr *) &(param->serveur), sizeof(struct sockaddr_in)) < 0) 
+		if(set_tcp_address(&(param->destination), port, NULL) == EXIT_FAILURE)
+			return EXIT_FAILURE;
+
+		if (bind(sock_tcp, (struct sockaddr *) &(param->destination), sizeof(struct sockaddr_in)) < 0) 
 		{
 			perror("bind");
+			return(EXIT_FAILURE);
+		}
+
+	#endif
+	printf("[I] demande de connec a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->serveur.sin_addr), ntohs(param->serveur.sin_port));
+
+	#ifdef CLIENT
+		if (connect (sock_tcp, (struct sockaddr *) & param.serveur, /*(socklen_t)*/sockSize)) < 0) {
+			perror ("connect");
+			return(EXIT_FAILURE);
+		}
+	#endif
+	#ifdef SERVEUR
+		if(accept(sock_tcp, (struct sockaddr *) & param.destination, (socklen_t *) sockSize) < 0) 
+		{
+			perror ("accept");
 			exit(EXIT_FAILURE);
 		}
 
-		if (bind(param->sock_tcp, (struct sockaddr *) &(param->serveur), sizeof(struct sockaddr_in)) < 0) 
-		{
-			perror("bind");
-			exit(EXIT_FAILURE);
-		}
+		printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param.client.sin_addr), ntohs(param.client.sin_port));
 	#endif
 	
-	//printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->serveur.sin_addr), ntohs(param->serveur.sin_port));
-	// Fin sockets
+	shutdown(sock_tcp);
 	
-	#ifdef CLIENT
-	//pthread_create(threads, 0,client_tcp_connexion, param);
-	pthread_create(threads + CAPTURE, 0, boucle_capture, param);
-	#endif
-	#ifdef SERVEUR
-	//pthread_create(threads, 0,server_tcp_connexion, param);
-	pthread_create(threads + PLAYBACK, 0, boucle_playback, param);
-	#endif
+	launch(NULL, NULL, threads, param);
+	
 	return EXIT_SUCCESS;
 }
 

@@ -20,6 +20,7 @@
 	typedef struct t_par_thread
 	{
 		struct sockaddr_in serveur, client;
+		struct sockaddr_in destination;
 		int sock_udp;
 		int sock_tcp;
 		int sock; // debug
@@ -30,7 +31,7 @@
 	typedef struct t_par_gtk
 	{
 		int statut;
-		pthread_t threads[2];
+		pthread_t threads[3];
 		s_par_thread param_t;
 		GtkWidget* widget;
 	} s_par_gtk;

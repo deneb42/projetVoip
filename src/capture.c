@@ -13,17 +13,9 @@
 
 void * boucle_capture(void *arg)
 {
-	s_par_thread param, tmp = *((s_par_thread*)arg);
+	s_par_thread param = *((s_par_thread*)arg);
 	s_MUV packetS;
 	int rc;
-	
-	param.serveur = tmp.serveur;
-	param.client = tmp.client;
-	param.sock_udp = tmp.sock_udp;
-	
-	param.val = tmp.val;
-	param.frames = tmp.frames; // nécéssaire ? je ne pense pas 
-
 	
 	if(initSon(CAPTURE, &(param.val), &(param.frames)) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
@@ -34,14 +26,14 @@ void * boucle_capture(void *arg)
 	{	
 		capture(packetS.data);
 		
-		#ifdef SERVEUR
-			rc = sendMUV(param.sock, &(param.client), &packetS);
-		#endif
+		//#ifdef SERVEUR
+			rc = sendMUV(param.sock, /*&(param.client)*/ &(param.destination), &packetS);
+		/*#endif
 		#ifdef CLIENT
 			rc = sendMUV(param.sock, &(param.serveur), &packetS);
-        	#endif
-        	if(rc != EXIT_FAILURE)
-			packetS.id++;
+		#endif*/
+		if(rc != EXIT_FAILURE)
+		packetS.id++;
 	}
 	
 	return NULL;

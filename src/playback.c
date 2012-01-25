@@ -28,7 +28,7 @@ void* boucle_playback(void* arg)
 	while (1) // boucle principale
 	{	
 		#ifdef SERVEUR
-			rc = receiveMUV(param.sock, &(param.client), packetR + index);
+			rc = receiveMUV(param.sock, /*&(param.client)*/NULL, packetR + index);
 		#endif
 		#ifdef CLIENT
 			rc = receiveMUV(param.sock, NULL, packetR + index);
