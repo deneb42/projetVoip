@@ -19,7 +19,7 @@ void * boucle_capture(void *arg)
 	
 	param.serveur = tmp.serveur;
 	param.client = tmp.client;
-	param.sock = tmp.sock;
+	param.sock_udp = tmp.sock_udp;
 	
 	param.val = tmp.val;
 	param.frames = tmp.frames; // nécéssaire ? je ne pense pas 
@@ -39,8 +39,8 @@ void * boucle_capture(void *arg)
 		#endif
 		#ifdef CLIENT
 			rc = sendMUV(param.sock, &(param.serveur), &packetS);
-        #endif
-        if(rc != EXIT_FAILURE)
+        	#endif
+        	if(rc != EXIT_FAILURE)
 			packetS.id++;
 	}
 	
@@ -58,6 +58,5 @@ int sendMUV(int sock, struct sockaddr_in * destination, s_MUV* packetS)
 	}
 		
 	fprintf(stderr, "[E] Packet %lu : error, %d bytes sent\n", packetS->id, nbS);
-	perror("fuck");
 	return EXIT_FAILURE;
 }

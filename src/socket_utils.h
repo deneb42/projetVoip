@@ -9,7 +9,14 @@
 		
 	int set_udp_address(struct sockaddr_in * address, char* port, char* host); 
 		/* Sur-function that initiate an address for a udp connection */
+
+	int set_tcp_address(struct sockaddr_in * address, char* port, char* host); 
+		/* Sur-function that initiate an address for a tcp connection */
 		
 	int sock_udp(); /* Create a UDP socket and returns its descriptor */
+
+	int sock_tcp(); /* Create a TCP socket and returns its descriptor */
+
+	
 	
 #endif

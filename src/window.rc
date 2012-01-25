@@ -2,6 +2,6 @@ pixmap_path "../img/"
  
 style "Windows"
 {
-	bg_pixmap[NORMAL] = "background.jpg"
+	bg_pixmap[NORMAL] = "background3.jpg"
 }
 class "GtkWindow" style "Windows"
