@@ -18,8 +18,8 @@ OBJS =
 # Path where the bin will be
 PGM_PATH = ./
 #names of the execs
-CLIENT = utils.o socket_utils.o son.o interface.o capture.o playback.o
-SERVEUR = utils.o socket_utils.o son.o interface.o capture.o playback.o
+CLIENT = utils.o socket_utils.o son.o interface.o capture.o playback.o main.o
+SERVEUR = utils.o socket_utils.o son.o interface.o capture.o playback.o main.o
 
 # For the generic utilisation, 
 # DO NOT TOUCH ANYTHING UNDER THIS LINE !!!

@@ -14,9 +14,6 @@
 #include "capture.h"
 #include "playback.h"
 
-//problème : l'adresse du client n'est pas gardé entre récéption et envoi
-
-// selection de l'adresse a amméliorer
 
 int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
 {
@@ -28,24 +25,24 @@ int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param
 	param->val = 11025;
 	param->frames = SIZE_PACKET / 4; // 2 bytes par channel, 2 channels
 	
-	address = paradd;
-	port = parport; // need verification de la véracité des paramètres
+	//address = paradd;
+	//port = parport; // need verification de la véracité des paramètres
 	
-	param->sock_udp = sock_udp();
+	param->sock = sock_udp();
 	
 	#ifdef CLIENT
-		set_udp_address(&(param->serveur), port, address);
+		//set_udp_address(&(param->serveur), port, address);
 	#endif
 	#ifdef SERVEUR
-		set_udp_address(&(param->serveur), port, NULL);
-		if (bind(param->sock_udp, (struct sockaddr *) &(param->serveur), sizeof(struct sockaddr_in)) < 0) 
+		//set_udp_address(&(param->serveur), port, NULL);
+		if (bind(param->sock, (struct sockaddr *) &(param->destination), sizeof(struct sockaddr_in)) < 0) 
 		{
 			perror("bind");
 			exit(EXIT_FAILURE);
 		}
 	#endif
 	
-	printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->serveur.sin_addr), ntohs(param->serveur.sin_port));
+	//printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
 	// Fin sockets
 	
 	#ifdef CLIENT

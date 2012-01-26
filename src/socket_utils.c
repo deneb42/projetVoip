@@ -7,6 +7,12 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
+#include <unistd.h>
+#include <netinet/in.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+
 
 int set_address(struct sockaddr_in * address, unsigned short int type, char* port, char* host, char* protocol)
 { /* Sets the parameters of the adress. protocol can be NULL. returns 1 on sucess, -1 on failure */
@@ -84,4 +90,6 @@ int sock_tcp()
 	
 	return sock;
 }
-	
+
+
+

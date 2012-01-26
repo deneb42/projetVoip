@@ -200,7 +200,7 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 		/* Recuperation de la GtkVBoxFrame contenu dans la GtkVBoxFrame*/
 		pList = gtk_container_get_children(GTK_CONTAINER(GTK_WIDGET(pList->data)));
 
-		printf("%s\n",gtk_label_get_text(GTK_LABEL(pList->data)));
+		//printf("%s\n",gtk_label_get_text(GTK_LABEL(pList->data)));
 		
 		/* Le premier element est le GtkLabel "Adresse:" de pList2 */
 		/* Passage a l element suivant : le GtkEntry */
@@ -227,7 +227,7 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 		
 
 		/*Appel de la fonction principale */
-		launch((char*)adress, (char*)port, param_g->threads, &(param_g->param_t));
+		init_connection((char*)adress, (char*)port, param_g->threads, &(param_g->param_t));
 		
 
 		/* Liberation de la memoire utilisee par la liste */
