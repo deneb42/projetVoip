@@ -42,7 +42,7 @@ int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param
 		}
 	#endif
 	
-	printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
+	//printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
 	// Fin sockets
 	
 	#ifdef CLIENT

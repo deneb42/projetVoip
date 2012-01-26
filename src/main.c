@@ -7,6 +7,14 @@
 #include <alsa/asoundlib.h>
 #include <signal.h>
 #include <pthread.h>
+#include <unistd.h>
+#include <string.h>
+
+#include <netdb.h>
+#include <netinet/in.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
 
 #include "utils.h"
 #include "socket_utils.h"
@@ -15,6 +23,8 @@
 
 #include "capture.h"
 #include "playback.h"
+
+#define LG_BUFFER	1024
 
 int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
 {
@@ -27,19 +37,37 @@ int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_threa
 	
 	sockTcp = sock_tcp();
 	
+	char               buffer [LG_BUFFER];
+	int                nb_lus;
+	char               buff [256];
+	
 	#ifdef CLIENT
 	
 		if(set_tcp_address(&(param->destination), port, address) == EXIT_FAILURE)
 			return EXIT_FAILURE;
-		
-		printf("[I] demande de connec a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
+		set_tcp_address(&(param->destination), port, address);
+		//printf("[I] demande de connec a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
 		
 		if (connect (sockTcp, (struct sockaddr *) &param->destination, sizeof(struct sockaddr_in)) < 0) {
 			perror ("connect");
 			return(EXIT_FAILURE);
 		}
-		getsockname(sockTcp, (struct sockaddr*) &(param->source), &sockSize);
-		printf("[I] connec depuis l'adresse IP = %s, Port = %u \n", inet_ntoa(param->source.sin_addr), ntohs(param->source.sin_port));
+		//getsockname(sockTcp, (struct sockaddr*) &(param->source), &sockSize);
+		//printf("[I] connec depuis l'adresse IP = %s, Port = %u \n", inet_ntoa(param->source.sin_addr), ntohs(param->source.sin_port));
+		setvbuf (stdout, NULL, _IONBF, 0);
+		while (1) {
+			if ((nb_lus = read (sockTcp, buffer, LG_BUFFER)) == 0)
+				break;
+			if (nb_lus < 0) {
+				perror ("read");
+				break;
+			}
+			write (STDOUT_FILENO, buffer, nb_lus);
+		}
+		
+	
+		
+		
 	#endif
 	#ifdef SERVEUR
 		memset(&param->destination, 0, sizeof (struct sockaddr_in));
@@ -52,8 +80,11 @@ int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_threa
 			perror("bind");
 			return(EXIT_FAILURE);
 		}
-		printf("[I] Attente de connec sur l'adresse IP = %s, Port = %u \n", inet_ntoa(param->source.sin_addr), ntohs(param->source.sin_port));
+		//printf("[I] Attente de connec sur l'adresse IP = %s, Port = %u \n", inet_ntoa(param->source.sin_addr), ntohs(param->source.sin_port));
 		listen (sockTcp, 5);
+		fprintf (stdout, "Mon adresse >> ");
+		getsockname (sockTcp, &(param->source), &sockSize);
+    		fprintf (stdout, "IP = %s, Port = %u \n", inet_ntoa (param->source.sin_addr),  ntohs (param->source.sin_port));
 
 		if((sock2 = accept(sockTcp, (struct sockaddr *)&(param->destination), &sockSize)) < 0) 
 		{
@@ -61,13 +92,25 @@ int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_threa
 			exit(EXIT_FAILURE);
 		}
 		getpeername(sock2, (struct sockaddr*) &(param->destination), &sockSize);
-	printf("[I] connec depuis l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
+		//printf("[I] connec depuis l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port))
+		sprintf (buff, "IP = %s, Port = %u \n", inet_ntoa (param->destination . sin_addr), ntohs (param->destination . sin_port));
+		fprintf (stdout, "Connexion : locale ");
+		getsockname (sock2, &(param->destination), &sockSize);
+    		fprintf (stdout, "IP = %s, Port = %u \n", inet_ntoa (param->destination . sin_addr),  ntohs (param->destination . sin_port));
+		fprintf (stdout, "          distante %s", buff);
+		write (sock2, "Votre adresse : ", 16);
+		write (sock2, buff, strlen (buff));
+		close (sock2);
+
+
+
+			
 	#endif
 	
 	shutdown(sockTcp, SHUT_RDWR);
-	
 	//param->destination->sin_port = htons(port);
-	printf("port : %s\n", port);
+	//printf("port : %s\n", port);
+
 	launch(NULL, NULL, threads, param);
 	
 	return EXIT_SUCCESS;

@@ -18,5 +18,4 @@
 	int sock_tcp(); /* Create a TCP socket and returns its descriptor */
 
 	
-	
 #endif
