@@ -52,6 +52,7 @@ int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_threa
 			perror ("connect");
 			return(EXIT_FAILURE);
 		}
+		
 		//getsockname(sockTcp, (struct sockaddr*) &(param->source), &sockSize);
 		//printf("[I] connec depuis l'adresse IP = %s, Port = %u \n", inet_ntoa(param->source.sin_addr), ntohs(param->source.sin_port));
 		setvbuf (stdout, NULL, _IONBF, 0);
@@ -101,6 +102,7 @@ int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_threa
 		write (sock2, "Votre adresse : ", 16);
 		write (sock2, buff, strlen (buff));
 		close (sock2);
+		close (sockTcp);
 
 
 
