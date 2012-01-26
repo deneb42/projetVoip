@@ -42,6 +42,9 @@ int main(int argc, char **argv)
 	/* Creation de la fenetre */
 	pWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	/* On ajoute un espace de 5 sur les bords de la fenetre */
+
+	param_g.widget = pWindow;
+
 	gtk_container_set_border_width(GTK_CONTAINER(pWindow), 3);
 	/* Definition de la position */
 	gtk_window_set_position(GTK_WINDOW(pWindow), GTK_WIN_POS_CENTER);
@@ -57,7 +60,7 @@ int main(int argc, char **argv)
 
 	/* Creation de la GtkBox verticale */
 	pVBox = gtk_vbox_new(FALSE, 0);
-	param_g.widget = pVBox;
+	//param_g.widget = pVBox;
 
 	/* Ajout de la GtkVBox dans la fenetre */
 	gtk_container_add(GTK_CONTAINER(pWindow), pVBox);
@@ -112,6 +115,8 @@ int main(int argc, char **argv)
 	pImage = gtk_image_new();
 	gtk_box_pack_start(GTK_BOX(pVBox), pImage, TRUE, TRUE, 0);
 
+	
+	
 
 	/* Creation du bouton avec un label pour se connecter */
 	pButton = gtk_button_new_with_label("Connexion");
@@ -119,6 +124,14 @@ int main(int argc, char **argv)
 			
 	/* Connexion du signal "clicked" du GtkButton */
 	g_signal_connect(G_OBJECT(pButton), "clicked", G_CALLBACK(on_clicked_button_connect), &param_g);
+
+	/*#ifdef SERVEUR
+		pButton = gtk_button_new();
+		gtk_box_pack_start(GTK_BOX(pVBox), pButton, TRUE, FALSE, 0);
+
+		pButton = gtk_button_new();
+		gtk_box_pack_start(GTK_BOX(pVBox), pButton, FALSE, FALSE, 0);
+	#endif*/
 
 
 	/* Creation du bouton avec un label pour se déconnecter */
@@ -173,8 +186,12 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 
 	if(param_g->statut == 0)
 	{	
-		/* Recuperation de la liste des elements que contient la GtkVBox */
+
+		/* Recuperation de la GtkVBox contenu dans la fenetre*/
 		pList = gtk_container_get_children(GTK_CONTAINER(param_g->widget));
+
+		/* Recuperation de la liste des elements que contient la GtkVBox */
+		pList = gtk_container_get_children(GTK_CONTAINER(GTK_WIDGET(pList->data)));
 		
 		/* Le premier element est la GtkImage:" de pList */
 		/* Passage a l element suivant : le GtkFrame */
@@ -221,13 +238,21 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 
 		/* Recuperation du texte contenu dans le 2e GtkEntry */
 		port = gtk_entry_get_text(GTK_ENTRY(pTempEntry));
-		gtk_label_set_text(GTK_LABEL(pTempLabel), "Attente de Connexion");
-
-		gtk_image_set_from_file(GTK_IMAGE(pTempImage),"../data/phone.gif");
 		
+		#ifdef CLIENT
+			gtk_label_set_text(GTK_LABEL(pTempLabel), "Attente de Connexion");
+
+			gtk_image_set_from_file(GTK_IMAGE(pTempImage),"../data/phone.gif");
+		#endif
 
 		/*Appel de la fonction principale */
 		init_connection((char*)adress, (char*)port, param_g->threads, &(param_g->param_t));
+
+		#ifdef SERVEUR
+			gtk_label_set_text(GTK_LABEL(pTempLabel), "Demande de Connexion");
+			question(param_g->widget);
+			
+		#endif
 		
 
 		/* Liberation de la memoire utilisee par la liste */
@@ -239,4 +264,29 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 	}
 }
 
+void question(gpointer data)
+{
+    GtkWidget *pQuestion;
 
+    /* Creation de la boite de message */
+    /* Type : Question -> GTK_MESSAGE_QUESTION */
+    /* Boutons : 1 OUI, 1 NON -> GTK_BUTTONS_YES_NO */
+    pQuestion = gtk_message_dialog_new (GTK_WINDOW(data),
+        GTK_DIALOG_MODAL,
+        GTK_MESSAGE_QUESTION,
+        GTK_BUTTONS_YES_NO,
+        "Voulez-vous accepter\nla demande de connexion ?");
+
+    /* Affichage et attente d une reponse */
+    switch(gtk_dialog_run(GTK_DIALOG(pQuestion)))
+    {
+        case GTK_RESPONSE_YES:
+            /* OUI -> on quitte l application */
+            gtk_main_quit();
+            break;
+        case GTK_RESPONSE_NO:
+            /* NON -> on detruit la boite de message */
+            gtk_widget_destroy(pQuestion);
+            break;
+    }
+}
