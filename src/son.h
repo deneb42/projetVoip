@@ -10,13 +10,15 @@
 	
 	#define CAPTURE 0
 	#define PLAYBACK 1
+	// Servent a identifier le handle en question. doivent etre utilisés pour définir le mode des fonctions suivantes.
 
 	int initSon(int mode, unsigned int *val, snd_pcm_uframes_t *frames);
+		// Alloue et initialise le handle séléctionné par mode, avec les valeurs passées en paramètres.
 	
-	void closeSon(int mode);
+	void closeSon(int mode); // Vide et désalloue le handle son séléctionné.
 
-	void capture(char* str);
+	void capture(char* str); // Capture une frame et l'enregistre dans le buffer passé en paramètre.
 
-	void playback(char* str);
+	void playback(char* str); // Lit la frame passée en paramètre.
 
 #endif
