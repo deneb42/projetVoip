@@ -181,7 +181,7 @@ void quit_callback(GtkWidget *pButton, s_par_gtk * param_g)
 void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 {
 	GtkWidget *pTempEntry;
-	GtkWidget *pEntry;
+	//GtkWidget *pEntry;
 	GtkWidget *pTempImage;
 	GtkWidget *pTempLabel;
 	GList *pList;
@@ -189,8 +189,8 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 	const gchar *port;
 	GtkWidget *pQuestion;
 	GtkWidget *pAbout;
-   	int ind;
-	GString* pString = g_string_new(NULL);
+   	//int ind;
+	//GString* pString = g_string_new(NULL);
 	
     
 
@@ -276,7 +276,7 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 		/*Le serveur se met en attente */
 		/*Le client lance une demande de connxion via l'interface */
 		init_connection((char*)adress, (char*)port, param_g->threads, &(param_g->param_t));
-		
+		/*
 		g_string_sprintf(pString,
 		"Connexion : loacale \nIP = %s, Port = %u \n",
 		inet_ntoa( param_g->param_t.destination.sin_addr), 
@@ -286,14 +286,14 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 		
 		#ifdef SERVEUR
 			gtk_label_set_text(GTK_LABEL(pTempLabel), "Demande de Connexion");
-			/* Affichage et attente d une reponse */
+			// Affichage et attente d une reponse
 			switch(gtk_dialog_run(GTK_DIALOG(pQuestion)))
 			{
 				case GTK_RESPONSE_YES:
-					/*Le serveur accepte la demande de connexion */
-					/* La comuncation est établie */
+					// Le serveur accepte la demande de connexion
+					// La comuncation est établie
 					launch(NULL, NULL, param_g->threads, &(param_g->param_t));
-					/* On detruit la boite de message */
+					// On detruit la boite de message
 					gtk_widget_destroy(pQuestion);
 
 					gtk_label_set_text(GTK_LABEL(pTempLabel), gtk_label_get_text(pEntry));
@@ -301,8 +301,8 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 					gtk_image_set_from_file(GTK_IMAGE(pTempImage),NULL);
 					break;
 				case GTK_RESPONSE_NO:
-					 /*Le serveur rejette la demande de connexion */
-					/* On detruit la boite de message */
+					 // Le serveur rejette la demande de connexion
+					// On detruit la boite de message
 					gtk_widget_destroy(pQuestion);
 					gtk_label_set_text(GTK_LABEL(pTempLabel), NULL);
 
@@ -316,20 +316,20 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 
 		#ifdef CLIENT
 		
-			/* Affichage de la boite de message */
+			// Affichage de la boite de message
 			switch(gtk_dialog_run(GTK_DIALOG(pAbout)))
 			{
 				case GTK_RESPONSE_OK:
 					gtk_label_set_text(GTK_LABEL(pTempLabel), "Etablissement de la connexion terminée");
 
 					gtk_image_set_from_file(GTK_IMAGE(pTempImage), NULL);
-					/* Destruction de la boite de message */
+					// Destruction de la boite de message
 					gtk_widget_destroy(pAbout);
 					break;	
 			}
 
 
-		#endif
+		#endif */
 		
 		
 

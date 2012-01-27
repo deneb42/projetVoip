@@ -34,7 +34,7 @@ int launch (char* parport, pthread_t* threads, s_par_thread* param)
 	printf("[I] Connecte en udp a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
 
 	pthread_create(threads + CAPTURE, 0, boucle_capture, param);
-	pthread_create(threads + PLAYBACK, 0, boucle_playback, param); // debug pour pas avoir d'echo
+	pthread_create(threads + PLAYBACK, 0, boucle_playback, param);
 	
 	return EXIT_SUCCESS;
 }
@@ -56,7 +56,8 @@ int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_threa
 	sockTcp = sock_tcp();
 	
 	#ifdef CLIENT
-	
+		printf("[I] Demande de connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
+		
 		if(set_tcp_address(&(param->destination), port, address) == EXIT_FAILURE)
 			return EXIT_FAILURE;
 			
@@ -67,6 +68,8 @@ int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_threa
 
 	#endif
 	#ifdef SERVEUR
+		printf("[I] Attente de connection sur l'adresse IP = %s, Port = %u \n", inet_ntoa(param->source.sin_addr), ntohs(param->source.sin_port));
+	
 		if(set_tcp_address(&(param->source), port, NULL) == EXIT_FAILURE)
 			return EXIT_FAILURE;		
 
