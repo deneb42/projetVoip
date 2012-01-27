@@ -275,7 +275,16 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 		/*Appel de la fonction principale */
 		/*Le serveur se met en attente */
 		/*Le client lance une demande de connxion via l'interface */
-		init_connection((char*)adress, (char*)port, param_g->threads, &(param_g->param_t));
+		if(init_connection((char*)adress, (char*)port, param_g->threads, &(param_g->param_t)) == EXIT_FAILURE)
+		{
+			gtk_label_set_text(GTK_LABEL(pTempLabel), "Erreur de connection, vérifiez les paramètres et reesayez");
+			gtk_image_set_from_file(GTK_IMAGE(pTempImage), NULL);
+		}
+		else
+		{
+			gtk_label_set_text(GTK_LABEL(pTempLabel), "Connecté");
+			param_g->statut = 1;
+		}
 		/*
 		g_string_sprintf(pString,
 		"Connexion : loacale \nIP = %s, Port = %u \n",
@@ -338,9 +347,6 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 		/* Liberation de la memoire utilisee par la liste */
 		
 		g_list_free(pList);
-
-		
-		param_g->statut = 1;
 	}
 }
 
