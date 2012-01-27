@@ -41,10 +41,10 @@ int send_voip(int sock, struct sockaddr_in * destination, s_voip* packetS)
 
 	if((nbS = sendto(sock, packetS, sizeof(s_voip), 0, (struct sockaddr *) destination, sizeof(struct sockaddr_in) )) > 0)
 	{
-		printf("[I] Packet %lu (%d bytes) : sent\n", packetS->id, nbS);
+		//printf("[I] Packet %lu (%d bytes) : sent\n", packetS->id, nbS);
 		return EXIT_SUCCESS;
 	}
 		
-	fprintf(stderr, "[E] Packet %lu : error, %d bytes sent\n", packetS->id, nbS);
+	//fprintf(stderr, "[E] Packet %lu : error, %d bytes sent\n", packetS->id, nbS);
 	return EXIT_FAILURE;
 }

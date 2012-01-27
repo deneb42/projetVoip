@@ -47,10 +47,10 @@ int receive_voip(int sock, s_voip* packetR)
 
 	if ((nbR = recv(sock, packetR, sizeof(s_voip), MSG_DONTWAIT)) > 0)
 	{
-		printf("[I] Packet %lu (%d bytes) : received\n", packetR->id, nbR);
+		//printf("[I] Packet %lu (%d bytes) : received\n", packetR->id, nbR);
 		return EXIT_SUCCESS;
 	}
 		
-	fprintf(stderr, "[E] Receiving error\n");
+	//fprintf(stderr, "[E] Receiving error\n");
 	return EXIT_FAILURE;
 }
