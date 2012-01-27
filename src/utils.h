@@ -11,19 +11,16 @@
 	#define TAILLE_LISTE 4
 	#define SIZE_PACKET 128
 	
-	typedef struct t_MUV
+	typedef struct t_voip
 	{
 		unsigned long id;
 		char data[SIZE_PACKET];
-	} s_MUV;
+	} s_voip;
 	
 	typedef struct t_par_thread
 	{
-		struct sockaddr_in serveur, client;
 		struct sockaddr_in destination, source;
-		int sock_udp;
-		int sock_tcp;
-		int sock; // debug
+		int sock;
 		unsigned int val;
 		snd_pcm_uframes_t frames;
 	} s_par_thread;
@@ -36,7 +33,7 @@
 		GtkWidget* widget;
 	} s_par_gtk;
 
-	int launch (char* paradd, char* port, pthread_t* threads, s_par_thread* param);
+	int launch (char* port, pthread_t* threads, s_par_thread* param);
 	
 	int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_thread* param);
 

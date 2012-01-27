@@ -13,25 +13,21 @@
 
 void * boucle_capture(void *arg)
 {
-	s_par_thread param = *((s_par_thread*)arg);
-	s_MUV packetS;
 	int rc;
+	s_voip packetS;	
+	s_par_thread param = *((s_par_thread*)arg);
 	
 	if(initSon(CAPTURE, &(param.val), &(param.frames)) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
 
 	packetS.id=0;
 
-	//while(1) // boucle principale
+	while(1) // boucle principale
 	{	
 		capture(packetS.data);
 		
-		//#ifdef SERVEUR
-			rc = sendMUV(param.sock, /*&(param.client)*/ &(param.destination), &packetS);
-		/*#endif
-		#ifdef CLIENT
-			rc = sendMUV(param.sock, &(param.serveur), &packetS);
-		#endif*/
+		rc = send_voip(param.sock, &(param.destination), &packetS);
+		
 		if(rc != EXIT_FAILURE)
 		packetS.id++;
 	}
@@ -39,16 +35,16 @@ void * boucle_capture(void *arg)
 	return NULL;
 }
 
-int sendMUV(int sock, struct sockaddr_in * destination, s_MUV* packetS)
+int send_voip(int sock, struct sockaddr_in * destination, s_voip* packetS)
 {
 	int nbS;
 
-	if((nbS = sendto(sock, packetS, sizeof(s_MUV), 0, (struct sockaddr *) destination, sizeof(struct sockaddr_in) )) > 0)
+	if((nbS = sendto(sock, packetS, sizeof(s_voip), 0, (struct sockaddr *) destination, sizeof(struct sockaddr_in) )) > 0)
 	{
-		printf("[I] Packet %lu (%d bytes) : sent\n", packetS->id, nbS);
+		//printf("[I] Packet %lu (%d bytes) : sent\n", packetS->id, nbS);
 		return EXIT_SUCCESS;
 	}
 		
-	fprintf(stderr, "[E] Packet %lu : error, %d bytes sent\n", packetS->id, nbS);
+	//fprintf(stderr, "[E] Packet %lu : error, %d bytes sent\n", packetS->id, nbS);
 	return EXIT_FAILURE;
 }

@@ -4,10 +4,8 @@
 #ifndef PLAYBACK_H
 #define PLAYBACK_H
 
-	int init_playback();
+	void* boucle_playback(void* arg); // Initialise le handle de lecture et lance la boucle principale qui lit les paquets recus.
 	
-	void* boucle_playback(void* arg);
-	
-	int receiveMUV(int sock, struct sockaddr_in * source, s_MUV* packetR);
+	int receive_voip(int sock, s_voip* packetR); // recoit un paquet danas packetR.
 	
 #endif

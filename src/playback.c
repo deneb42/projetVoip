@@ -14,10 +14,12 @@
 
 void* boucle_playback(void* arg)
 {
+	int rc, index;
+	s_voip packetR[TAILLE_LISTE];
 	s_par_thread param = *((s_par_thread*)arg);
 	
-	int rc=EXIT_SUCCESS, index=0;
-	s_MUV packetR[TAILLE_LISTE];
+	rc=EXIT_SUCCESS;
+	index=0;
 	
 	if(initSon(PLAYBACK, &(param.val), &(param.frames)) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
@@ -25,15 +27,10 @@ void* boucle_playback(void* arg)
 	for(int i=0;i<TAILLE_LISTE;i++)
 		packetR[i].id=0;
 	
-	//while (1) // boucle principale
+	while (1) // boucle principale
 	{	
-		#ifdef SERVEUR
-			rc = receiveMUV(param.sock, /*&(param.client)*/NULL, packetR + index);
-		#endif
-		#ifdef CLIENT
-			rc = receiveMUV(param.sock, NULL, packetR + index);
-		#endif
-		
+		rc = receive_voip(param.sock, packetR + index);
+
 		if(rc!=EXIT_FAILURE)
 		{
 			playback(packetR[index].data);
@@ -44,17 +41,16 @@ void* boucle_playback(void* arg)
 	return NULL;
 }
 
-int receiveMUV(int sock, struct sockaddr_in * source, s_MUV* packetR)
+int receive_voip(int sock, s_voip* packetR)
 {
-	int sockSize = sizeof(struct sockaddr_in);
 	int nbR;
 
-	if ((nbR = recvfrom(sock, packetR, sizeof(s_MUV), MSG_DONTWAIT, (struct sockaddr *) source, (socklen_t*)&sockSize )) > 0)
+	if ((nbR = recv(sock, packetR, sizeof(s_voip), MSG_DONTWAIT)) > 0)
 	{
-		printf("[I] Packet %lu (%d bytes) : received\n", packetR->id, nbR);
+		//printf("[I] Packet %lu (%d bytes) : received\n", packetR->id, nbR);
 		return EXIT_SUCCESS;
 	}
 		
-	fprintf(stderr, "[E] Receiving error\n");
+	//fprintf(stderr, "[E] Receiving error\n");
 	return EXIT_FAILURE;
 }
