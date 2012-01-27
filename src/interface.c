@@ -2,9 +2,15 @@
 #include <gtk/gtk.h>
 #include <unistd.h>
 #include <pthread.h>
-
+#include <arpa/inet.h>
 #include "utils.h"
 #include "son.h"
+
+#include <netdb.h>
+#include <netinet/in.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
 
 void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g);
 void on_clicked_button_deconnect(GtkWidget *pButton, s_par_gtk * param_g);
@@ -41,11 +47,12 @@ int main(int argc, char **argv)
 
 	/* Creation de la fenetre */
 	pWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	/* On ajoute un espace de 5 sur les bords de la fenetre */
-
-	param_g.widget = pWindow;
+	/* On ajoute un espace de 3 sur les bords de la fenetre */
 
 	gtk_container_set_border_width(GTK_CONTAINER(pWindow), 3);
+	param_g.widget = pWindow;
+
+	
 	/* Definition de la position */
 	gtk_window_set_position(GTK_WINDOW(pWindow), GTK_WIN_POS_CENTER);
 	/* Titre de la fenetre */
@@ -178,14 +185,37 @@ void quit_callback(GtkWidget *pButton, s_par_gtk * param_g)
 void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 {
 	GtkWidget *pTempEntry;
+	GtkWidget *pEntry;
 	GtkWidget *pTempImage;
 	GtkWidget *pTempLabel;
 	GList *pList;
 	const gchar *adress;
 	const gchar *port;
+	GtkWidget *pQuestion;
+	GtkWidget *pAbout;
+   	int ind;
+	GString* pString = g_string_new(NULL);
+	
+    
 
 	if(param_g->statut == 0)
 	{	
+		/* Creation de la 1ere boite de message pQuestion */
+    		/* Type : Question -> GTK_MESSAGE_QUESTION */
+    		/* Boutons : 1 OUI, 1 NON -> GTK_BUTTONS_YES_NO */
+    		pQuestion = gtk_message_dialog_new (GTK_WINDOW(param_g->widget),
+        	GTK_DIALOG_MODAL,
+        	GTK_MESSAGE_QUESTION,
+        	GTK_BUTTONS_YES_NO,
+        	"Voulez-vous accepter\nla demande de connexion ?");
+		/* Creation de la 2e boite de message pAbout*/
+		/* Type : Information -> GTK_MESSAGE_INFO */
+		/* Bouton : 1 OK -> GTK_BUTTONS_OK */
+		pAbout = gtk_message_dialog_new (GTK_WINDOW(param_g->widget),
+		GTK_DIALOG_MODAL,
+		GTK_MESSAGE_INFO,
+		GTK_BUTTONS_OK,
+		"Veuillez patienter quelques instants, s'il vous plaît ...");
 
 		/* Recuperation de la GtkVBox contenu dans la fenetre*/
 		pList = gtk_container_get_children(GTK_CONTAINER(param_g->widget));
@@ -244,15 +274,69 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 
 			gtk_image_set_from_file(GTK_IMAGE(pTempImage),"../data/phone.gif");
 		#endif
-
+		
+		
 		/*Appel de la fonction principale */
+		/*Le serveur se met en attente */
+		/*Le client lance une demande de connxion via l'interface */
 		init_connection((char*)adress, (char*)port, param_g->threads, &(param_g->param_t));
+		
+		g_string_sprintf(pString,
+		"Connexion : loacale \nIP = %s, Port = %u \n",
+		inet_ntoa( param_g->param_t.destination.sin_addr), 
+		ntohs (param_g->param_t.destination.sin_port));
 
+	        pEntry = gtk_label_new(pString->str);
+		
 		#ifdef SERVEUR
 			gtk_label_set_text(GTK_LABEL(pTempLabel), "Demande de Connexion");
-			question(param_g->widget);
+			/* Affichage et attente d une reponse */
+			switch(gtk_dialog_run(GTK_DIALOG(pQuestion)))
+			{
+				case GTK_RESPONSE_YES:
+					/*Le serveur accepte la demande de connexion */
+					/* La comuncation est établie */
+					launch(NULL, NULL, param_g->threads, &(param_g->param_t));
+					/* On detruit la boite de message */
+					gtk_widget_destroy(pQuestion);
+
+					gtk_label_set_text(GTK_LABEL(pTempLabel), gtk_label_get_text(pEntry));
+
+					gtk_image_set_from_file(GTK_IMAGE(pTempImage),NULL);
+					break;
+				case GTK_RESPONSE_NO:
+					 /*Le serveur rejette la demande de connexion */
+					/* On detruit la boite de message */
+					gtk_widget_destroy(pQuestion);
+					gtk_label_set_text(GTK_LABEL(pTempLabel), NULL);
+
+					gtk_image_set_from_file(GTK_IMAGE(pTempImage),NULL);
+
+					 break;
+			}
 			
 		#endif
+		g_string_free(pString,TRUE);
+
+		#ifdef CLIENT
+		
+			/* Affichage de la boite de message */
+			switch(gtk_dialog_run(GTK_DIALOG(pAbout)))
+			{
+				case GTK_RESPONSE_OK:
+					gtk_label_set_text(GTK_LABEL(pTempLabel), "Etablissement de la connexion terminée");
+
+					gtk_image_set_from_file(GTK_IMAGE(pTempImage), NULL);
+					/* Destruction de la boite de message */
+					gtk_widget_destroy(pAbout);
+					break;	
+			}
+
+
+		#endif
+		
+		
+
 		
 
 		/* Liberation de la memoire utilisee par la liste */
@@ -264,29 +348,4 @@ void on_clicked_button_connect(GtkWidget *pButton, s_par_gtk * param_g)
 	}
 }
 
-void question(gpointer data)
-{
-    GtkWidget *pQuestion;
 
-    /* Creation de la boite de message */
-    /* Type : Question -> GTK_MESSAGE_QUESTION */
-    /* Boutons : 1 OUI, 1 NON -> GTK_BUTTONS_YES_NO */
-    pQuestion = gtk_message_dialog_new (GTK_WINDOW(data),
-        GTK_DIALOG_MODAL,
-        GTK_MESSAGE_QUESTION,
-        GTK_BUTTONS_YES_NO,
-        "Voulez-vous accepter\nla demande de connexion ?");
-
-    /* Affichage et attente d une reponse */
-    switch(gtk_dialog_run(GTK_DIALOG(pQuestion)))
-    {
-        case GTK_RESPONSE_YES:
-            /* OUI -> on quitte l application */
-            gtk_main_quit();
-            break;
-        case GTK_RESPONSE_NO:
-            /* NON -> on detruit la boite de message */
-            gtk_widget_destroy(pQuestion);
-            break;
-    }
-}

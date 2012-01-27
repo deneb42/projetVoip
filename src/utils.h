@@ -40,4 +40,5 @@
 	
 	int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_thread* param);
 
+
 #endif
