@@ -32,10 +32,10 @@ int main(int argc, char **argv)
 	
 	/*Chargement des parametres d arriere plan */
 	#ifdef CLIENT
-		gtk_rc_parse("../data/window.rc");
+		gtk_rc_parse("../data/window_c.rc");
 	#endif
 	#ifdef SERVEUR
-		gtk_rc_parse("../data/window2.rc");	
+		gtk_rc_parse("../data/window_s.rc");	
 	#endif
 	
 

@@ -70,7 +70,7 @@ int sock_udp()
 
 	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) 
 	{
-		fprintf(stderr, "sock_udp : address and port must not be NULL");
+		fprintf(stderr, "[E] sock_udp : address and port must not be NULL");
 		exit(EXIT_FAILURE);
 	}
 	
@@ -84,7 +84,7 @@ int sock_tcp()
 
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
 	{
-		fprintf(stderr, "sock_tcp : address and port must not be NULL");
+		fprintf(stderr, "[E] sock_tcp : address and port must not be NULL");
 		exit(EXIT_FAILURE);
 	}
 	

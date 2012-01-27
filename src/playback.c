@@ -27,13 +27,8 @@ void* boucle_playback(void* arg)
 	
 	//while (1) // boucle principale
 	{	
-		#ifdef SERVEUR
-			rc = receiveMUV(param.sock, /*&(param.client)*/NULL, packetR + index);
-		#endif
-		#ifdef CLIENT
-			rc = receiveMUV(param.sock, NULL, packetR + index);
-		#endif
-		
+		rc = receive_voip(param.sock, packetR + index);
+
 		if(rc!=EXIT_FAILURE)
 		{
 			playback(packetR[index].data);
@@ -44,12 +39,11 @@ void* boucle_playback(void* arg)
 	return NULL;
 }
 
-int receiveMUV(int sock, struct sockaddr_in * source, s_MUV* packetR)
+int receive_voip(int sock, s_voip* packetR)
 {
-	int sockSize = sizeof(struct sockaddr_in);
 	int nbR;
 
-	if ((nbR = recvfrom(sock, packetR, sizeof(s_MUV), MSG_DONTWAIT, (struct sockaddr *) source, (socklen_t*)&sockSize )) > 0)
+	if ((nbR = recv(sock, packetR, sizeof(s_voip), MSG_DONTWAIT) > 0)
 	{
 		printf("[I] Packet %lu (%d bytes) : received\n", packetR->id, nbR);
 		return EXIT_SUCCESS;

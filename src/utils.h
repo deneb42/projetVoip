@@ -11,7 +11,7 @@
 	#define TAILLE_LISTE 4
 	#define SIZE_PACKET 128
 	
-	typedef struct t_MUV
+	typedef struct t_voip
 	{
 		unsigned long id;
 		char data[SIZE_PACKET];

@@ -6,10 +6,8 @@
 
 	#include <arpa/inet.h>
 
-	int init_capture();
-	
-	void* boucle_capture(void* arg);
+	void* boucle_capture(void* arg); // Initialise le handle de capture et lance la boucle principale qui enregistre un paquet et l'envoit.
 
-	int sendMUV(int sock, struct sockaddr_in * destination, s_MUV* packetS);
+	int send_voip(int sock, struct sockaddr_in * destination, s_voip* packetS); // Envoit le paquet passé en paramètre.
 	
 #endif
