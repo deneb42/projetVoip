@@ -14,27 +14,21 @@
 #include "capture.h"
 #include "playback.h"
 
+#define LG_BUFFER 124
 
-int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
-{
-	char *address, *port;
 
-	// param contient les variables nécéssaires dans les threads pour le son et les socket
-	
-	// pour le son
+int launch (char* parport, pthread_t* threads, s_par_thread* param)
+{ // param contient les variables nécéssaires dans les threads pour le son et les socket.
+
 	param->val = 11025;
 	param->frames = SIZE_PACKET / 4; // 2 bytes par channel, 2 channels
 	
-	//address = paradd;
-	//port = parport; // need verification de la véracité des paramètres
-	
 	param->sock = sock_udp();
 	
-	#ifdef CLIENT
-		//set_udp_address(&(param->serveur), port, address);
-	#endif
+	set_port(&param->source, parport);
+	set_port(&param->destination, parport);
+
 	#ifdef SERVEUR
-		//set_udp_address(&(param->serveur), port, NULL);
 		if (bind(param->sock, (struct sockaddr *) &(param->destination), sizeof(struct sockaddr_in)) < 0) 
 		{
 			perror("bind");
@@ -42,17 +36,14 @@ int launch (char* paradd, char* parport, pthread_t* threads, s_par_thread* param
 		}
 	#endif
 	
-	//printf("[I] Connection a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
-	// Fin sockets
-	
-	#ifdef CLIENT
+	printf("[I] Connecte en udp a l'adresse IP = %s, Port = %u \n", inet_ntoa(param->destination.sin_addr), ntohs(param->destination.sin_port));
+
 	pthread_create(threads + CAPTURE, 0, boucle_capture, param);
-	#endif
-	#ifdef SERVEUR
-	pthread_create(threads + PLAYBACK, 0, boucle_playback, param);
-	#endif
+	pthread_create(threads + PLAYBACK, 0, boucle_playback, param); // debug pour pas avoir d'echo
+	
 	return EXIT_SUCCESS;
 }
+
 
 int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_thread* param)
 {
@@ -138,10 +129,8 @@ int init_connection(char* paradd, char* parport, pthread_t* threads, s_par_threa
 	#endif
 	
 	shutdown(sockTcp, SHUT_RDWR);
-	//param->destination->sin_port = htons(port);
-	//printf("port : %s\n", port);
 
-	launch(NULL, NULL, threads, param);
+	launch(parport, threads, param);
 	
 	return EXIT_SUCCESS;
 }

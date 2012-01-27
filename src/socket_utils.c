@@ -91,5 +91,14 @@ int sock_tcp()
 	return sock;
 }
 
-
+int set_port(struct sockaddr_in * address, char* port)
+{
+	int num;
+	
+	if (sscanf(port, "%d", &num) == 1) { // si le numero de port est entré apres -p
+		address->sin_port = htons(num);
+		return EXIT_SUCCESS;
+	}
+	return EXIT_FAILURE;
+}
 

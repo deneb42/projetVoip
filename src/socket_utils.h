@@ -15,7 +15,9 @@
 		
 	int sock_udp(); /* Crée un socket udp et retourne son descripteur */
 
-	int sock_tcp(); /* Crée un socket tcp et retourne son descripteur */or */
+	int sock_tcp(); /* Crée un socket tcp et retourne son descripteur */
+	
+	int set_port(struct sockaddr_in * address, char* port); /* définit le port de l'adresse a port */
 
 	
 #endif

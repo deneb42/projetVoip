@@ -156,14 +156,10 @@ void on_clicked_button_deconnect(GtkWidget *pButton, s_par_gtk * param_g)
 {
 	if(param_g->statut == 1)
 	{
-		#ifdef CLIENT
 		pthread_cancel(param_g->threads[CAPTURE]);
 		closeSon(CAPTURE);
-		#endif
-		#ifdef SERVEUR
 		pthread_cancel(param_g->threads[PLAYBACK]);
 		closeSon(PLAYBACK);
-		#endif
 		param_g->statut = 0;
 	}
 }

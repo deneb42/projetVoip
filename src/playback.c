@@ -14,10 +14,12 @@
 
 void* boucle_playback(void* arg)
 {
+	int rc, index;
+	s_voip packetR[TAILLE_LISTE];
 	s_par_thread param = *((s_par_thread*)arg);
 	
-	int rc=EXIT_SUCCESS, index=0;
-	s_MUV packetR[TAILLE_LISTE];
+	rc=EXIT_SUCCESS;
+	index=0;
 	
 	if(initSon(PLAYBACK, &(param.val), &(param.frames)) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
@@ -25,7 +27,7 @@ void* boucle_playback(void* arg)
 	for(int i=0;i<TAILLE_LISTE;i++)
 		packetR[i].id=0;
 	
-	//while (1) // boucle principale
+	while (1) // boucle principale
 	{	
 		rc = receive_voip(param.sock, packetR + index);
 
@@ -43,7 +45,7 @@ int receive_voip(int sock, s_voip* packetR)
 {
 	int nbR;
 
-	if ((nbR = recv(sock, packetR, sizeof(s_voip), MSG_DONTWAIT) > 0)
+	if ((nbR = recv(sock, packetR, sizeof(s_voip), MSG_DONTWAIT)) > 0)
 	{
 		printf("[I] Packet %lu (%d bytes) : received\n", packetR->id, nbR);
 		return EXIT_SUCCESS;

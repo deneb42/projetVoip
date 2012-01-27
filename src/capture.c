@@ -13,20 +13,20 @@
 
 void * boucle_capture(void *arg)
 {
-	s_par_thread param = *((s_par_thread*)arg);
-	s_voip packetS;
 	int rc;
+	s_voip packetS;	
+	s_par_thread param = *((s_par_thread*)arg);
 	
 	if(initSon(CAPTURE, &(param.val), &(param.frames)) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
 
 	packetS.id=0;
 
-	//while(1) // boucle principale
+	while(1) // boucle principale
 	{	
 		capture(packetS.data);
 		
-		rc = sendMUV(param.sock, &(param.destination), &packetS);
+		rc = send_voip(param.sock, &(param.destination), &packetS);
 		
 		if(rc != EXIT_FAILURE)
 		packetS.id++;
