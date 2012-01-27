@@ -1,4 +1,0 @@
-gcc -D CLIENT -o main_client.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c main.c 
-gcc -o ./client utils_client.o  socket_utils_client.o  son_client.o  interface_client.o  capture_client.o  playback_client.o  main_client.o    -lasound -pthread `pkg-config --libs gtk+-2.0` 
-gcc -D SERVEUR -o main_serveur.o -Wall -ansi -pedantic -std=c99 -D_GNU_SOURCE `pkg-config --cflags gtk+-2.0`  -c main.c
-gcc -o ./serveur utils_serveur.o  socket_utils_serveur.o  son_serveur.o  interface_serveur.o  capture_serveur.o  playback_serveur.o  main_serveur.o    -lasound -pthread `pkg-config --libs gtk+-2.0`
