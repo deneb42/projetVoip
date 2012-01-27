@@ -1,10 +1,5 @@
 ﻿Cahier des charges : 
 
-PROBLEME AVEC GTK REGLÉ PAR : 
-
-gcc -Wall -c main.c $(pkg-config --cflags gtk+-2.0)
-gcc "-W|, --no-as-needed" -Wall -o testGTK main.o $(pkg-config --libs gtk+-2.0)
-
 	l’établissement de la communication,
 OK	l’enregistrement du signal sonore,
 	la compression des échantillons obtenus,
