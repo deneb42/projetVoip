@@ -24,7 +24,7 @@ int launch (char* parport, pthread_t* threads, s_par_thread* param)
 	set_port(&param->destination, parport);
 
 	#ifdef SERVEUR
-		if (bind(param->sock, (struct sockaddr *) &(param->destination), sizeof(struct sockaddr_in)) < 0) 
+		if (bind(param->sock, (struct sockaddr *) &(param->source), sizeof(struct sockaddr_in)) < 0) 
 		{
 			perror("bind");
 			exit(EXIT_FAILURE);
