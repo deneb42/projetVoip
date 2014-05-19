@@ -1,0 +1,7 @@
+pixmap_path "./"
+ 
+style "Windows"
+{
+	bg_pixmap[NORMAL] = "background_c.jpg"
+}
+class "GtkWindow" style "Windows"

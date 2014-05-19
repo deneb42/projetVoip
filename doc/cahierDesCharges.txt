@@ -1,9 +1,16 @@
 ﻿Cahier des charges : 
 
-PROBLEME AVEC GTK REGLÉ PAR : 
-
-gcc -Wall -c main.c $(pkg-config --cflags gtk+-2.0)
-gcc "-W|, --no-as-needed" -Wall -o testGTK main.o $(pkg-config --libs gtk+-2.0)
+	l’établissement de la communication,
+OK	l’enregistrement du signal sonore,
+	la compression des échantillons obtenus,
+OK	la mise sous forme de paquets des données,
+OK	l’envoi des données,
+OK	la réception des données et 
+	leur resynchronisation avec l’émetteur,
+OK	la dé-paquétisation des données,
+	la décompression des données,
+OK	l’envoi des échantillons vers le périphérique de sortie audio.
+	la fermeture de la communication.
 
 
 
@@ -68,19 +75,19 @@ Regroupement des fonctions afin de ne pas dupliquer de code entre client et serv
 Etapes :
 
 	Origine : 
-		- Enregistrement / lecture du son (meme machine)
-		- Mise en place d'un protocole RTP entre deux machines (etablissement d'un socket, mono sens)
+OK		- Enregistrement / lecture du son (meme machine)
+OK		- Mise en place d'un protocole RTP entre deux machines (etablissement d'un socket, mono sens)
 
 	Base :
 		-Transfert de la voix par rtp, lecture possible a l'arrivée
-			- 1er temps : arrivée désync, lecture a l'arrivée
+OK			- 1er temps : arrivée désync, lecture a l'arrivée
 			- 2e temps : sync des paquets a l'arrivée (liste chainée circulaire / coutdown), lecture des paquets bien rangés.
 
 	Après
 		- Etablissement propre de la connexion
-		- Mise en place du double sens
+OK		- Mise en place du double sens
 		- Réglage des paramètres a la volée
-		- Interface graphique
+-		- Interface graphique
 		- QoS
 		
 	Mise en place d'un serveur : 

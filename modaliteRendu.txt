@@ -1,0 +1,11 @@
+projets a rendre le 27 a midi
+	-1 pt par demi journée.
+	rapport (10-15p), sources + makefile
+	
+présentation / soutenance le 30/01 13h30 - 17h
+	5 slides (1 présdentation, 1 conclusion, 2-3 sur ce qui a été fait, les points d'algo important, ce qu'il reste a faire).
+	démo
+	~ 10mn / groupe
+
+emmannuelle.frenoux@limsi.fr
+					u-psud.fr
